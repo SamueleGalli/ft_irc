@@ -24,4 +24,9 @@ int main(int c, char **v)
         std::cout << RED << "Error: \n(not a number/invalid number)\n" << RESET;
         return (1);
     }
+    ft_irc irc;
+    irc.port = v[1];
+    irc.server = v[2];
+    if (handle_server(irc) == 1)
+        return (1);
 }
