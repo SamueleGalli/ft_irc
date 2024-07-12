@@ -1,7 +1,10 @@
 CPP = c++
 CPPFLAGS = -g -std=c++98 -Wall -Werror -Wextra
 NAME = ircserv
-SRCS = main.cpp handle_net.cpp help_function.cpp
+SRCS =	main.cpp \
+		handle_server.cpp \
+		help_function.cpp \
+		handle_client.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 RESET = \033[0m

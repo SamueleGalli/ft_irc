@@ -1,5 +1,11 @@
 #include "ft_irc.hpp"
 
+void    print_message(const std::string message, const char *color)
+{
+    std::cout << color << message << RESET <<std::endl;
+}
+
+
 bool enough_elements(const std::string &input)
 {
     std::istringstream iss(input);
@@ -17,7 +23,7 @@ bool enough_elements(const std::string &input)
 
 bool    check_info(ft_irc irc)
 {
-    if (enough_elements(irc.nick) == false || enough_elements(irc.user) == false || enough_elements(irc.pass) == false)
+    if (enough_elements(irc.client.nick) == false || enough_elements(irc.client.user) == false || enough_elements(irc.client.pass) == false)
         return (false);
     return (true);
 }
@@ -28,26 +34,25 @@ void welcoming_msg(ft_irc &irc)
     int i_u = 5;
     int i_p = 5;
 
-    while (irc.nick[i_n] == ' ' && irc.nick[i_n] != '\0')
+    while (irc.client.nick[i_n] == ' ' && irc.client.nick[i_n] != '\0')
         i_n++;
-    while (irc.user[i_u] == ' ' && irc.user[i_u] != '\0')
+    while (irc.client.user[i_u] == ' ' && irc.client.user[i_u] != '\0')
         i_u++;
-    while (irc.pass[i_p] == ' ' && irc.pass[i_p] != '\0')
+    while (irc.client.pass[i_p] == ' ' && irc.client.pass[i_p] != '\0')
         i_p++;
 
-    std::string nickname = irc.nick.substr(i_n);
-    std::string username = irc.user.substr(i_u);
-    std::string password = irc.pass.substr(i_p);
+    std::string nickname = irc.client.nick.substr(i_n);
+    std::string username = irc.client.user.substr(i_u);
+    std::string password = irc.client.pass.substr(i_p);
 
-    irc.nick = nickname;
-    irc.user = username;
-    irc.pass = password;
+    irc.client.nick = nickname;
+    irc.client.user = username;
+    irc.client.pass = password;
 
-    std::cout << GREEN << "Your provided information are correct. Here's a little recap:" << RESET
-              << MAGENTA << "\nNICK: (" << irc.nick << ")" << RESET
-              << YELLOW << "\nUSER: (" << irc.user << ")" << RESET
-              << CYAN << "\nPASS: (" << irc.pass << ")" << RESET
+    print_message("Your provided information are correct. Here's a little recap:", GREEN);
+              std::cout << MAGENTA << "\nNICK: (" << irc.client.nick << ")" << RESET
+              << YELLOW << "\nUSER: (" << irc.client.user << ")" << RESET
+              << CYAN << "\nPASS: (" << irc.client.pass << ")" << RESET
               << GREEN << "\nWELCOME!!" << RESET << std::endl;
 }
-
 
