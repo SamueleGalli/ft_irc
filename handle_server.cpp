@@ -37,7 +37,7 @@ int    handle_server(ft_irc irc)
         close(irc.server.server_sock);
         return (1);
     }
-    std::cout << GREEN << "👂Listening on port " << irc.port << "👂" RESET << std::endl;
+    std::cout << GREEN << "👂Listening on localhost and port " << irc.port << "👂" RESET << std::endl;
     while (1)
     {
         irc.client.client_len = sizeof(irc.client.client_addr);

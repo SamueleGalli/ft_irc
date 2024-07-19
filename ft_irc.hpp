@@ -22,6 +22,7 @@
 #include <cstring>
 #include <sstream>
 #include <vector>
+#include <cstdlib>
 
 class client_info
 {
