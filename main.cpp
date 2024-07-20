@@ -1,39 +1,39 @@
 #include "ft_irc.hpp"
 
-bool valid_number(const std::string &s)
+bool valid_number(const std::string &s, ft_irc &irc)
 {
     int num = std::atoi(s.c_str());
     if (num < 0 || num > 65535)
     {
-        print_message("🚨Error: \n(not a valid port number)🚨", RED);
+        print_message("🚨Error: \n(not a valid port number)🚨", RED , irc);
         return false;
     }
     if (s.empty())
     {
-        print_message("🚨Error: \n(no number found)🚨", RED);
+        print_message("🚨Error: \n(no number found)🚨", RED , irc);
         return false;
     }
     for (size_t i = 0; i < s.size(); i++)
     {
         if (!std::isdigit(s[i]))
         {
-            print_message("🚨Error: \n(not a number)🚨", RED);
+            print_message("🚨Error: \n(not a number)🚨", RED , irc);
             return false;
         }
     }
     return true;
 }
 
-bool valid_password(const std::string &s)
+bool valid_password(const std::string &s, ft_irc &irc)
 {
     if (s.empty())
     {
-        print_message("🚨Error: \n(no password found)🚨", RED);
+        print_message("🚨Error: \n(no password found)🚨", RED , irc);
         return (false);
     }
     if (s.size() < 8)
     {
-        print_message("🚨Error: \n(password too short)🚨", RED);
+        print_message("🚨Error: \n(password too short)🚨", RED , irc);
         return (false);
     }
     int up_case = 0;
@@ -53,22 +53,22 @@ bool valid_password(const std::string &s)
     }
     if (up_case == 0)
     {
-        print_message("🚨Error: \n(password must contain at least one uppercase letter)🚨", RED);
+        print_message("🚨Error: \n(password must contain at least one uppercase letter)🚨", RED , irc);
         return (false);
     }
     if (low_case == 0)
     {
-        print_message("🚨Error: \n(password must contain at least one lowercase letter)🚨", RED);
+        print_message("🚨Error: \n(password must contain at least one lowercase letter)🚨", RED , irc);
         return (false);
     }
     if (num == 0)
     {
-        print_message("🚨Error: \n(password must contain at least one number)🚨", RED);
+        print_message("🚨Error: \n(password must contain at least one number)🚨", RED , irc);
         return (false);
     }
     if (symbol == 0)
     {
-        print_message("🚨Error: \n(password must contain at least one special character)🚨", RED);
+        print_message("🚨Error: \n(password must contain at least one special character)🚨", RED , irc);
         return (false);
     }
     return (true);
@@ -76,16 +76,17 @@ bool valid_password(const std::string &s)
 
 int main(int c, char **v)
 {
+    ft_irc irc;
+    irc.client.client_sock = -1;
     if (c != 3)
     {
-        print_message("🚨Error: \n(not valid number of arguments)🚨", RED);
+        print_message("🚨Error: \n(not valid number of arguments)🚨", RED , irc);
         return (1);
     }
-    if (valid_number(v[1]) == false)
+    if (valid_number(v[1], irc) == false)
         return (1);
-    if (valid_password(v[2]) == false)
+    if (valid_password(v[2], irc) == false)
         return (1);
-    ft_irc irc;
     irc.port = v[1];
     irc.pass_server = v[2];
     if (handle_server(irc) == 1)

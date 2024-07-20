@@ -3,13 +3,11 @@
 
 
 #define RESET "\033[0m"
-#define BOLD "\033[1m"
 #define RED  "\033[31m"
 #define GREEN  "\033[32m"
 #define YELLOW  "\033[33m"
-#define BLUE  "\033[34m"
-#define MAGENTA  "\033[35m"
-#define CYAN  "\033[36m"
+
+
 
 #include <iostream>
 #include <string>
@@ -29,7 +27,6 @@ class client_info
     public:
         std::string nick;
         std::string user;
-        std::string pass;
         int client_sock;
         struct sockaddr_in client_addr;
         socklen_t client_len;
@@ -47,6 +44,7 @@ class ft_irc
     public:
         std::string port;
         std::string pass_server;
+        struct pollfd p_fds[1];
         server_info server;
         client_info client;
         char buffer[512];
@@ -55,11 +53,12 @@ class ft_irc
 bool    check_info(ft_irc irc);
 bool    enough_elements(const std::string &input);
 
-
-int    handle_server(ft_irc irc);
+int     handle_server(ft_irc irc);
 int     handle_client(ft_irc irc);
 
-void    print_message(const std::string message, const char * color);
+ssize_t receive_data(ft_irc &irc);
+
+void    print_message(const std::string message, const std::string color, ft_irc irc);
 void    welcoming_msg(ft_irc &irc);
 
 

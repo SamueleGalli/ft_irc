@@ -10,7 +10,7 @@ OBJS = $(SRCS:.cpp=.o)
 RESET = \033[0m
 BOLD = \033[1m
 RED = \033[31m
-GREEN = \033[32m
+RED = \033[32m
 YELLOW = \033[33m
 BLUE = \033[34m
 MAGENTA = \033[35m
@@ -21,7 +21,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	@echo "$(BOLD)$(CYAN)[Compilazione binario]:$(RESET) $@"
 	$(CPP) $(CPPFLAGS) -o $(NAME) $(OBJS)
-	@echo "$(GREEN)[Successo]:$(RESET) $(NAME) è stato creato con successo!"
+	@echo "$(RED)[Successo]:$(RESET) $(NAME) è stato creato con successo!"
 
 %.o: %.cpp
 	@echo "$(BOLD)$(BLUE)[Compilazione oggetto]:$(RESET) $<"
