@@ -6,7 +6,7 @@
 #define RED  "\033[31m"
 #define GREEN  "\033[32m"
 #define YELLOW  "\033[33m"
-
+#define CYAN  "\033[36m"
 
 
 #include <iostream>
@@ -21,6 +21,7 @@
 #include <sstream>
 #include <vector>
 #include <cstdlib>
+#include <cstdio>
 
 class client_info
 {
@@ -30,6 +31,9 @@ class client_info
         int client_sock;
         struct sockaddr_in client_addr;
         socklen_t client_len;
+        std::string host;
+        std::string server;
+        std::string realname;
 };
 
 class server_info
@@ -53,13 +57,16 @@ class ft_irc
 bool    check_info(ft_irc irc);
 bool    enough_elements(const std::string &input);
 
-int     handle_server(ft_irc irc);
-int     handle_client(ft_irc irc);
+int     handle_server(ft_irc &irc);
+int     handle_client(ft_irc &irc);
+int     handle_command(ft_irc &irc);
 
-ssize_t receive_data(ft_irc &irc);
+std::string first_command(ft_irc irc);
+std::string second_command(ft_irc irc);
 
-void    print_message(const std::string message, const std::string color, ft_irc irc);
-void    welcoming_msg(ft_irc &irc);
+void    message(const std::string message);
+void    init_poll(ft_irc &irc);
+void    colored_message(const std::string message, const std::string color);
 
 
 #endif

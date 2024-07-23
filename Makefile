@@ -4,7 +4,8 @@ NAME = ircserv
 SRCS =	main.cpp \
 		handle_server.cpp \
 		help_function.cpp \
-		handle_client.cpp
+		handle_client.cpp \
+		command.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 RESET = \033[0m
