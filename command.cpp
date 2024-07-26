@@ -1,8 +1,5 @@
 #include "ft_irc.hpp"
 
-/*Nickname Esistente: Se il nickname è già in uso, il server può rispondere con un messaggio di errore e richiedere un nickname diverso.
-Comandi Mancanti o Malformati: Se i comandi sono malformati o mancanti, il server invierà messaggi di errore o di richiesta di correzione.*/
-
 // Funzione per gestire il comando PASS
 int process_pass_command(ft_irc &irc, bool &authenticated)
 {
