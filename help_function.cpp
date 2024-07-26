@@ -12,11 +12,6 @@ void    colored_message(const std::string message, const std::string color)
     std::cout << color << message << RESET <<std::endl;
 }
 
-void    message(const std::string message)
-{
-    std::cout << message << std::endl;
-}
-
 bool enough_elements(const std::string &input)
 {
     std::istringstream iss(input);

@@ -60,13 +60,17 @@ bool    enough_elements(const std::string &input);
 int     handle_server(ft_irc &irc);
 int     handle_client(ft_irc &irc);
 int     handle_command(ft_irc &irc);
+int     handle_user(ft_irc &irc);
+int     check_nick(const std::string &nick, ft_irc &irc);
+int     check_server_host(std::string str);
+
 
 std::string first_command(ft_irc irc);
 std::string second_command(ft_irc irc);
 
-void    message(const std::string message);
+void    send_error_message(int sock, const std::string &message);
 void    init_poll(ft_irc &irc);
 void    colored_message(const std::string message, const std::string color);
-
+void    welcome_msg(ft_irc &irc);
 
 #endif

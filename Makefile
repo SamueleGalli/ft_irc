@@ -5,7 +5,8 @@ SRCS =	main.cpp \
 		handle_server.cpp \
 		help_function.cpp \
 		handle_client.cpp \
-		command.cpp
+		command.cpp \
+		help_function_command.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 RESET = \033[0m
