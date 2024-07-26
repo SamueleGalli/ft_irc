@@ -1,0 +1,5 @@
+cosa fa fare:
+- gestione nickname mutlipli uguali
+- gestione piu client
+- gestione messaggi parziali chiusi con segniali ctrl+C e ctrl+D e ctrl+Z
+- gestione comandi JOIN, OP, DE_OP ect.
