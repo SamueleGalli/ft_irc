@@ -22,15 +22,31 @@ void welcome_msg(ft_irc &irc)
     send(irc.client.client_sock, buffer.c_str(), buffer.length(), 0);
 }
 
-int check_server_host(std::string str)
+int is_valid_hostname(const std::string& str)
 {
-    if (str[0] == '-' || str[0] == '.')
-    for (int i = 0; str[i] != '\0'; i++)
+    if (str == "*")
+        return 0;
+    if (!std::isalnum(str[0]) || !std::isalnum(str.back()))
+        return 1;
+    for (size_t i = 0; i < str.size(); ++i)
     {
-        if (!std::isalnum(str[i]) && str[i] != '-' && str[i] != '.' && str[i] != '*')
-            return (1);
+        char c = str[i];
+        if (!std::isalnum(c) && c != '-' && c != '.')
+            return 1;
+        if (c == '-')
+        {
+            if (i == 0 || i == str.size() - 1 || str[i - 1] == '.' || str[i + 1] == '.')
+                return 1;
+        }
+        if (c == '.')
+        {
+            if (i > 0 && str[i - 1] == '-')
+                return 1;
+            if (i < str.size() - 1 && str[i + 1] == '-')
+                return 1;
+        }
     }
-    return (0);
+    return true;
 }
 
 //controllare
@@ -51,7 +67,6 @@ int handle_user(ft_irc &irc)
         send_error_message(irc.client.client_sock, error_msg);
         return (1);
     }
-    //irc.client.realname.erase(1, 1);
     if (irc.client.host.length() > 253 || check_server_host(irc.client.host) == 1)
     {
         send_error_message(irc.client.client_sock, error_msg);

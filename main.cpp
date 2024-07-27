@@ -77,7 +77,6 @@ bool valid_password(const std::string &s)
 int main(int c, char **v)
 {
     ft_irc irc;
-    irc.client.client_sock = -1;
     if (c != 3)
     {
         colored_message("🚨Error: \n(not valid number of arguments)🚨", RED);
