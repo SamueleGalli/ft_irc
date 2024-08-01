@@ -1,4 +1,4 @@
-#include "ft_irc.hpp"
+#include "header/ft_irc.hpp"
 
 bool valid_number(const std::string &s)
 {
