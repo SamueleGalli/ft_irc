@@ -3,13 +3,7 @@
 void send_error_message(std::string err_code, const std::string &message, int sock)
 {
     std::string msg_error = "server " + err_code + " " + message + "\r\n";
-    ssize_t bytes_sent = send(sock, msg_error.c_str(), msg_error.size(), 0);
-
-    if (bytes_sent < 0)
-    {
-        perror("send");
-        std::cerr << RED << "Error sending message: " << msg_error << RESET << std::endl;
-    }
+    send(sock, msg_error.c_str(), msg_error.size(), 0);
 }
 void welcome_msg(ft_irc &irc, int i)
 {
@@ -41,23 +35,23 @@ int is_valid_hostname(const std::string &str)
             return 1;
         if (c == '-')
         {
-            if (i == 0 || i == str.size() - 1 || str[i - 1] == '-' || str[i + 1] == '-')
+            if ((i == 0 || i == str.size() - 1) && (str[i - 1] == '-' || str[i + 1] == '-'))
                 return 1;
         }
         if (c == '.')
         {
-            if (i == 0 || i == str.size() - 1 || str[i - 1] == '.' || str[i + 1] == '.')
+            if ((i == 0 || i == str.size() - 1) && (str[i - 1] == '.' || str[i + 1] == '.'))
                 return 1;
         }
     }
-    return true;
+    return 0;
 }
 
-//controllare
+//USER saas .soos -suus :asdasdasdas asd sa ugiy ad yifas y8dy fafs 
 int handle_user(ft_irc &irc, int i)
 {
     std::string error_msg;
-    error_msg = first_command(irc) + " :Not enough parameters\r\n";
+    error_msg = first_command(irc) + " :Not enough parameters";
     std::stringstream ss(second_command(irc));
     ss >> irc.client[i].user >> irc.client[i].host >> irc.client[i].server;
     std::getline(ss, irc.client[i].realname);
@@ -67,6 +61,14 @@ int handle_user(ft_irc &irc, int i)
         return (1);
     }
     if (irc.client[i].realname[1] != ':')
+    {
+        send_error_message("461", error_msg, irc.client[i].client_sock);
+        return (1);
+    }
+    int j = 2;
+    while (irc.client[i].realname[j] != '\0' && irc.client[i].realname[j] == ' ')
+        j++;
+    if (irc.client[i].realname[j] == '\0')
     {
         send_error_message("461", error_msg, irc.client[i].client_sock);
         return (1);
@@ -81,45 +83,64 @@ int handle_user(ft_irc &irc, int i)
         send_error_message("461", error_msg, irc.client[i].client_sock);
         return (1);
     }
-    if (irc.client[i].registered == 2 || irc.client[i].registered == 1)
-        irc.client[i].registered++;
+    irc.client[i].is_user = true;
     return (0);
 }
-int check_nick(const std::string &nick, ft_irc &irc, int i)
+
+int cont_check_nick(ft_irc &irc, int i, const std::string &nick)
 {
-    if (i > 1)
+    std::string error_msg;
+    if (nick.length() > 9)
     {
-        for (std::vector<client_info>::const_iterator it = irc.client.begin() + i + 1; it != irc.client.end() + i + 1; ++it)
+        error_msg = nick + " :Erroneous nickname";
+        send_error_message("432", error_msg, irc.client[i].client_sock);
+        return (1);
+    }
+    int alpha = 0;
+    int num = 0;
+    for (unsigned int j = 0; j < nick.length(); j++)
+    {
+        if (std::isalpha(nick[j]))
+            alpha = 1;
+        else if (std::isdigit(nick[j]))
+            num = 1;
+        if (!std::isalnum(nick[j]) && nick[j] != '-' && nick[j] != '.')
         {
-            if (it->nick == nick)
-            {
-                            send_error_message("433", nick + " :Nickname is already in use", irc.client[i].client_sock);
-                return (1);
-            }
+            error_msg = nick + " :Erroneous nickname";
+            send_error_message("432", error_msg, irc.client[i].client_sock);
+            return (1);
         }
     }
+    if (alpha == 0 || num == 0 || nick[0] == '.' || nick[nick.length() - 1] == '.' || \
+    nick[0] == '-' || nick[nick.length() - 1] == '-')
+    {
+        error_msg = nick + " :Erroneous nickname";
+        send_error_message("432", error_msg, irc.client[i].client_sock);
+        return (1);
+    }
+    irc.client[i].is_nick = true;
+    return (0);
+}
+
+int check_nick(const std::string &nick, ft_irc &irc, int i)
+{
     if (second_command(irc) == "no")
     {
         send_error_message("431", ": no nickname given", irc.client[i].client_sock);
         return (1);
     }
-    std::string error_msg;
-    if (nick.length() > 9)
+    else if (i >= 1)
     {
-        error_msg = nick + " :Erroneous nickname\r\n";
-        send_error_message("432", error_msg, irc.client[i].client_sock);
-        return (1);
-    }
-    for (unsigned int i = 0; i < nick.length(); i++)
-    {
-        if (!std::isalnum(nick[i]) && nick[i] != '-' && nick[i] != '.')
+        for (int j = 0; j < i; j++)
         {
-            error_msg = nick + " :Erroneous nickname\r\n";
-            send_error_message("432", error_msg, irc.client[i].client_sock);
-            return (1);
+            if (irc.client[j].nick == nick)
+            {
+                send_error_message("433", nick + " :Nickname is already in use", irc.client[i].client_sock);
+                return 1;
+            }
         }
     }
-    if (irc.client[i].registered == 1 || irc.client[i].registered == 2)
-        irc.client[i].registered++;
+    if (cont_check_nick(irc, i, nick) == 1)
+        return (1);
     return (0);
 }

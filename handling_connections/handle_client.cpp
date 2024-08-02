@@ -27,7 +27,9 @@ int process_incoming_data(ft_irc &irc, int i)
 int accept_connections(ft_irc &irc)
 {
     client_info new_client;
-    new_client.registered = 0;
+    new_client.is_nick = false;
+    new_client.is_user = false;
+    new_client.is_pass = false;
     new_client.client_len = sizeof(new_client.client_addr);
     new_client.client_sock = accept(irc.server.server_sock, (struct sockaddr *)&new_client.client_addr, &new_client.client_len);
     new_client.authenticated = false;
@@ -42,6 +44,7 @@ int accept_connections(ft_irc &irc)
     struct pollfd pfd;
     pfd.fd = new_client.client_sock;
     pfd.events = POLLIN;
+    pfd.revents = 0;
     irc.p_fds.push_back(pfd);
     return 0;
 }
@@ -61,6 +64,17 @@ int set_sock(ft_irc &irc,int i)
     return 0;
 }
 
+/*
+==642995== Conditional jump or move depends on uninitialised value(s)
+==642995==    at 0x40B034: pfd_connections(ft_irc&) (handle_client.cpp:70)
+==642995==    by 0x40B272: poll_and_handle(ft_irc&) (handle_client.cpp:106)
+==642995==    by 0x40B2C4: handle_client(ft_irc&) (handle_client.cpp:114)
+==642995==    by 0x40CC7C: handle_server(ft_irc&) (handle_server.cpp:118)
+==642995==    by 0x403882: main (main.cpp:91)
+==642995==  Uninitialised value was created by a stack allocation
+==642995==    at 0x40AC64: accept_connections(ft_irc&) (handle_client.cpp:28)
+==642995== 
+*/
 int pfd_connections(ft_irc &irc)
 {
     size_t i = 0;

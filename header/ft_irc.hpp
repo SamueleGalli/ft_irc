@@ -33,7 +33,9 @@ class client_info
         std::string server;
         std::string realname;
         bool    authenticated;
-        int registered;
+        bool    is_nick;
+        bool    is_user;
+        bool    is_pass;
         int client_sock;
         struct sockaddr_in client_addr;
         socklen_t client_len;
