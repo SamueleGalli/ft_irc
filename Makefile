@@ -2,11 +2,14 @@ CPP = c++
 CPPFLAGS = -g -std=c++98 -Wall -Werror -Wextra
 NAME = ircserv
 SRCS =	main.cpp \
-		help/help_function.cpp \
+		help/function_for_commands.cpp \
+		help/registration.cpp \
+		help/messages.cpp \
+		help/extra_function.cpp \
 		all_command/command.cpp \
-		all_command/help_function_command.cpp \
 		handling_connections/handle_client.cpp \
-		handling_connections/handle_server.cpp
+		handling_connections/handle_server.cpp \
+		all_command/single_commands/quit_command.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 RESET = \033[0m

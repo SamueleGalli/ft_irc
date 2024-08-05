@@ -64,17 +64,6 @@ int set_sock(ft_irc &irc,int i)
     return 0;
 }
 
-/*
-==642995== Conditional jump or move depends on uninitialised value(s)
-==642995==    at 0x40B034: pfd_connections(ft_irc&) (handle_client.cpp:70)
-==642995==    by 0x40B272: poll_and_handle(ft_irc&) (handle_client.cpp:106)
-==642995==    by 0x40B2C4: handle_client(ft_irc&) (handle_client.cpp:114)
-==642995==    by 0x40CC7C: handle_server(ft_irc&) (handle_server.cpp:118)
-==642995==    by 0x403882: main (main.cpp:91)
-==642995==  Uninitialised value was created by a stack allocation
-==642995==    at 0x40AC64: accept_connections(ft_irc&) (handle_client.cpp:28)
-==642995== 
-*/
 int pfd_connections(ft_irc &irc)
 {
     size_t i = 0;

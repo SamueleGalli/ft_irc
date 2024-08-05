@@ -1,85 +1,70 @@
 #include "../header/ft_irc.hpp"
 
-// Funzione per gestire il comando PASS
-int process_pass_command(ft_irc &irc, int i)
+void    commands(ft_irc &irc, int i)
 {
-    if (second_command(irc) == irc.pass_server)
-    {
-        irc.client[i].is_pass = true;
-        return (0);
-    }
-    else if (second_command(irc) == "no")
-    {
-        std::string message = first_command(irc) + " : Not enough parameters";
-        send_error_message("461", message, irc.client[i].client_sock);
-    }
+    if (first_command(irc) == "QUIT")
+        quit_command(irc, i);
     else
-        send_error_message("464", ": Password incorrect", irc.client[i].client_sock);
-    return (0);
+        send_error_message(irc, i, "ops", "invalid command", irc.client[i].client_sock);
+    //comandi se registrato
+    //comando non riconosciuto devi essere registrato
+    /*421     ERR_UNKNOWNCOMMAND
+                    "<command> :Unknown command"*/
 }
 
-int user_command(ft_irc &irc, int i)
-{
-    int u_client = handle_user(irc, i);
-    if (u_client == 0 && irc.client[i].is_pass == true)
-    {
-        if (irc.client[i].is_nick == true && irc.client[i].is_pass == true && \
-        irc.client[i].is_user == true)
-        {
-            welcome_msg(irc, i);
-            irc.client[i].authenticated = true;
-        }
-        return (0);
-    }
-    else if (irc.client[i].is_user == true && u_client == 0)
-        send_error_message("462", ": You are already registered", irc.client[i].client_sock);
-    return (0);
-}
-
-void nick_command(ft_irc &irc, int i)
-{
-    int u_nick = check_nick(second_command(irc), irc, i);
-    if (u_nick == 0 && irc.client[i].is_pass == true && \
-    (irc.client[i].is_nick == false || irc.client[i].is_nick == true))
-    {
-        irc.client[i].nick = second_command(irc);
-        if (irc.client[i].is_nick == true && irc.client[i].is_pass == true && \
-        irc.client[i].is_user == true)
-        {
-            welcome_msg(irc, i);
-            irc.client[i].authenticated = true;
-        }
-        return ;
-    }
-}
-
+/*c2r3p10% nc 127.0.0.1 6667
+PASS Ciao123!
+NICK
+:unknown 431 * : no nickname given
+USER s s s :
+n
+:unknown ops * invalid command
+NICK s1
+:server 001 s1 :Welcome to the Internet Relay Network s1!s@s :
+:server 002 s1 :Your host is s, running version 1.0.0
+:server 003 s1 :This server was created on Aug  5 2024 at 12:19:06
+:server 004 s1 s 1.0.0 ao mtov
+QUIT esco
+:unknown ops * invalid command
+QUIT esco
+:s1!s@s QUIT esco
+*/
 int registretion(ft_irc &irc, int i)
 {
     if (!irc.client[i].authenticated)
     {
         if (first_command(irc) == "PASS" && irc.client[i].is_pass == false)
-            return (process_pass_command(irc, i));
+            process_pass_command(irc, i);
         else if (first_command(irc) == "PASS" && irc.client[i].is_pass == true)
         {
-            send_error_message("462", ": You are already registered", irc.client[i].client_sock);
+            send_error_message(irc, i, "462", ": You are already registered", irc.client[i].client_sock);
             return (0);
         }
-        if (first_command(irc) == "NICK")
+        else if (first_command(irc) == "NICK")
             nick_command(irc, i);
         else if (first_command(irc) == "USER")
             user_command(irc, i);
+        else
+            send_error_message(irc, i, "ops", "invalid command", irc.client[i].client_sock);
+        if (irc.client[i].is_nick == true && irc.client[i].is_pass == true && \
+        irc.client[i].is_user == true)
+        {
+            welcome_msg(irc, i);
+            irc.client[i].authenticated = true;
+        }
+        std::cout << "--------------------------\nis_nick: " << irc.client[i].is_nick << std::endl;
+        std::cout << "is_user: " << irc.client[i].is_user << std::endl;
+        std::cout << "is_pass: " << irc.client[i].is_pass << std::endl;
     }
     else
     {
-        if (first_command(irc) == "NICK" || first_command(irc) == "USER" || first_command(irc) == "PASS")
-            send_error_message("462", ": You are already registered", irc.client[i].client_sock);
+
         std::cout << CYAN <<" Client[" << i << "]: " << RESET;
         colored_message(irc.buffer, CYAN);
-        send_error_message("ops", "invalid command", irc.client[i].client_sock);
-        //comandi se registrato
-        //comando non riconosciuto devi essere registrato
-        /*421     ERR_UNKNOWNCOMMAND
-                        "<command> :Unknown command"*/
+        if (first_command(irc) == "NICK" || first_command(irc) == "USER" || first_command(irc) == "PASS")
+            send_error_message(irc, i, "462", ": You are already registered", irc.client[i].client_sock);
+        else
+            commands(irc, i);
     }
     return (0);
 }
