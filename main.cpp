@@ -1,6 +1,6 @@
 #include "header/ft_irc.hpp"
 
-bool valid_number(const std::string &s)
+bool valid_port(const std::string &s, ft_irc &irc)
 {
     int num = std::atoi(s.c_str());
     if (num < 0 || num > 65535)
@@ -21,10 +21,11 @@ bool valid_number(const std::string &s)
             return false;
         }
     }
+    irc.port = s;
     return true;
 }
 
-bool valid_password(const std::string &s)
+bool valid_password(const std::string &s, ft_irc &irc)
 {
     if (s.empty())
     {
@@ -71,6 +72,7 @@ bool valid_password(const std::string &s)
         colored_message("🚨Error: \n(password must contain at least one special character)🚨", RED);
         return (false);
     }
+    irc.pass_server = s;
     return (true);
 }
 
@@ -82,12 +84,10 @@ int main(int c, char **v)
         colored_message("🚨Error: \n(not valid number of arguments)🚨", RED);
         return (1);
     }
-    if (valid_number(v[1]) == false)
+    if (valid_port(v[1], irc) == false)
         return (1);
-    if (valid_password(v[2]) == false)
+    if (valid_password(v[2], irc) == false)
         return (1);
-    irc.port = v[1];
-    irc.pass_server = v[2];
     if (handle_server(irc) == 1)
         return (1);
 }

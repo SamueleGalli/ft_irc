@@ -5,7 +5,7 @@ SRCS =	main.cpp \
 		help/function_for_commands.cpp \
 		help/registration.cpp \
 		help/messages.cpp \
-		help/extra_function.cpp \
+		help/ausiliary.cpp \
 		all_command/command.cpp \
 		handling_connections/handle_client.cpp \
 		handling_connections/handle_server.cpp \

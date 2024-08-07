@@ -9,9 +9,9 @@ int process_incoming_data(ft_irc &irc, int i)
     {
         if (bytes < 0)
             perror("recv");
-        close(irc.p_fds[i].fd); //close the connections
-        irc.p_fds.erase(irc.p_fds.begin() + i); // Remove fd of client
-        irc.client.erase(irc.client.begin() + i); // Remove client
+        close(irc.p_fds[i].fd); //chiude connession
+        irc.p_fds.erase(irc.p_fds.begin() + i); //rimuobe l'fd monitorato da poll
+        irc.client.erase(irc.client.begin() + i); //rimuove il client dal vettore
         std::cout << "🚨Error: \n(connection closed)🚨" << std::endl;
         return 1;
     }
@@ -23,15 +23,15 @@ int process_incoming_data(ft_irc &irc, int i)
     return 0;
 }
 
-// Funzione per accettare e gestire connessioni
 int accept_connections(ft_irc &irc)
 {
+    //inizzializzo client
     client_info new_client;
+    new_client.client_len = sizeof(new_client.client_addr);
+    new_client.client_sock = accept(irc.server.server_sock, (struct sockaddr *)&new_client.client_addr, &new_client.client_len);
     new_client.is_nick = false;
     new_client.is_user = false;
     new_client.is_pass = false;
-    new_client.client_len = sizeof(new_client.client_addr);
-    new_client.client_sock = accept(irc.server.server_sock, (struct sockaddr *)&new_client.client_addr, &new_client.client_len);
     new_client.authenticated = false;
     if (new_client.client_sock < 0)
     {
@@ -41,11 +41,7 @@ int accept_connections(ft_irc &irc)
     }
     // Aggiungi il nuovo client al vettore dei client
     irc.client.push_back(new_client);
-    struct pollfd pfd;
-    pfd.fd = new_client.client_sock;
-    pfd.events = POLLIN;
-    pfd.revents = 0;
-    irc.p_fds.push_back(pfd);
+    init_poll(irc, new_client.client_sock);
     return 0;
 }
 
@@ -54,6 +50,7 @@ int set_sock(ft_irc &irc,int i)
     int reuse = 1;
     if (non_blocking_server(irc.client[i].client_sock) == 1)
         return 1;
+    //setta il socket in modo che se esci lo puoi subito riutilizzare lo stesso
     if (setsockopt(irc.client[i].client_sock, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse)) < 0)
     {
         std::cerr << "🚨Error: \n(setsockopt failed)🚨" << std::endl;
@@ -66,8 +63,7 @@ int set_sock(ft_irc &irc,int i)
 
 int pfd_connections(ft_irc &irc)
 {
-    size_t i = 0;
-    while (i < irc.p_fds.size())
+    for (size_t i = 0; i < irc.p_fds.size();)
     {
         //controlla se l'utente invia messaggi
         if (irc.p_fds[i].revents & POLLIN)
@@ -98,7 +94,8 @@ int pfd_connections(ft_irc &irc)
 // Funzione per eseguire il poll e gestire gli eventi in arrivo
 int poll_and_handle(ft_irc &irc)
 {
-    memset(irc.buffer, 0, sizeof(irc.buffer));
+    memset(irc.buffer, 0, sizeof(irc.buffer)); //inizializza il buffer a 0
+    //faccio si che pool monitori tutti gli fd all'infinito
     int result = poll(irc.p_fds.data(), irc.p_fds.size(), -1);
     if (result < 0)
     {

@@ -59,7 +59,6 @@ class ft_irc
         std::vector<client_info> client;
 };
 
-bool    enough_elements(const std::string &input);
 
 int     handle_server(ft_irc &irc);
 int     handle_client(ft_irc &irc);
@@ -74,11 +73,10 @@ std::string first_command(ft_irc irc);
 std::string second_command(ft_irc irc);
 
 void    process_pass_command(ft_irc &irc, int i);
-void    remove_client(ft_irc &irc, int i);
 void    quit_command(ft_irc &irc, int i);
 void    client_message(ft_irc &irc, int i, const std::string &command, const std::string &ex_message);
 void    send_error_message(ft_irc &irc, int i, const std::string err_code, const std::string &message, int sock);
-void    init_poll(ft_irc &irc);
+void    init_poll(ft_irc &irc, int &sock);
 void    colored_message(const std::string message, const std::string color);
 void    welcome_msg(ft_irc &irc, int i);
 void    nick_command(ft_irc &irc, int i);

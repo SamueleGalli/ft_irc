@@ -141,6 +141,7 @@ int check_nick(const std::string &nick, ft_irc &irc, int i)
 
 void    process_pass_command(ft_irc &irc, int i)
 {
+    //non inserisco la password
     if (second_command(irc) == "no")
     {
         std::string message = first_command(irc) + " : Not enough parameters";
@@ -157,8 +158,6 @@ int user_command(ft_irc &irc, int i)
     int u_client = handle_user(irc, i);
     if (u_client == 0 && irc.client[i].is_pass == true)
     {
-        if (irc.client[i].is_user == true && u_client == 0)
-            send_error_message(irc, i, "462", ": You are already registered", irc.client[i].client_sock);
         irc.client[i].is_user = true;
         return (0);
     }
