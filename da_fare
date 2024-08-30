@@ -1,5 +1,4 @@
-cosa fa fare:
-SAMU) gestione piu client, gestione nickname mutlipli uguali.
-ROSTIC) gestione messaggi parziali chiusi con segniali ctrl+C e ctrl+D e ctrl+Z, gestione comandi client.
-SAMIR) gestione comandi operator(Flags).
-studiare e fare i numeric
+- Un utente può auto-kickarsi dal canale?
+- Un utente può auto-rimuovere i propri privilegi di operator?
+- E' possibile che in un canale non siano più presenti operator?
+- E' possibile visualizzare il topic di un canale alla quale non si ha accesso?
