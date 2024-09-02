@@ -39,7 +39,7 @@ int handle_user(ft_irc &irc, int i)
 {
     std::string error_msg;
     error_msg = first_command(irc) + " :Not enough parameters";
-    std::stringstream ss(second_command(irc));
+    std::stringstream ss(trim(second_command(irc)));
     ss >> irc.client[i].user >> irc.client[i].host >> irc.client[i].server;
     std::getline(ss, irc.client[i].realname);
     irc.client[i].realname = trim(irc.client[i].realname);
@@ -130,7 +130,7 @@ int check_nick(const std::string &nick, ft_irc &irc, int i)
 void    process_pass_command(ft_irc &irc, int i)
 {
     //non inserisco la password
-    std::string pass = trim(second_command(irc));
+    std::string pass = extract_message(trim((second_command(irc))));
     if (pass.empty())
     {
         std::string message = first_command(irc) + " : Not enough parameters";

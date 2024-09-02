@@ -24,7 +24,7 @@ int check_number_of_arguments(std::string command)
 		num_args++;
 	if (first_wd == "KICK" && is_comment(command) == 0)
 		return 1;
-	else if (first_wd == "TOPIC" && is_comment(command) == 0)
+	else if (first_wd == "TOPIC" && ((num_args > 1 && is_comment(command) == 0) || num_args == 1))
 		return 1;
 	else if (first_wd == "INVITE" && num_args == 2)
 		return 1;
