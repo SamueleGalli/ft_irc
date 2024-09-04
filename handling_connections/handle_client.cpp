@@ -1,6 +1,16 @@
 #include "../header/ft_irc.hpp"
 
-// Funzione per leggere i dati in arrivo dal socket e processarli
+/*
+se crei 2 client ogniuno crea il suo canale e
+esempio
+client 1 #SAS
+client 2 #SOS
+e client 1 entra in #SOS
+e client 2 entra in #SAS
+se poi il primo client esce.
+poi non posso creare una altra connessione con lo stesso perche non mi entra in accepts_connection
+e leakka perche indice del client e negativo
+*/
 int process_incoming_data(ft_irc &irc, int i)
 {
         // Ignora i dati in arrivo se il server è sospeso

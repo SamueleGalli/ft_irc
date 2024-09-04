@@ -29,8 +29,19 @@ class Channel
 	    bool topic_all_users;
 	    bool users_limit;
 	    bool has_key;
-	    
+		bool have_op;
+
+		int	num_user() const
+		{
+			return _num_users;
+		}
+		int operatorCount() const
+		{
+			return operatorUsers.size();
+		}
+
 	    bool channelHasName(const std::string& name) const;
+		bool isMember(const client_info& user);
 
 	    void DeleteUserFromChannel(ft_irc& irc, int i);
 	    void addUser(ft_irc &irc, int i);

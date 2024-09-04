@@ -1,4 +1,5 @@
 #include "../../header/ft_irc.hpp"
+
 void set_view_topic(ft_irc& irc, int i, Channel& channel, const std::string new_topic)
 {
 	std::string message;

@@ -45,6 +45,10 @@ class client_info
         {
             return nick == name;
         }
+        bool operator==(const client_info& other) const
+        {
+            return (nick == other.nick) && (client_sock == other.client_sock);
+        }
         int client_sock;
         struct sockaddr_in client_addr;
         socklen_t client_len;

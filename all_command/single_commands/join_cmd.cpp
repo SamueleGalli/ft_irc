@@ -1,11 +1,12 @@
 #include "../../header/ft_irc.hpp"
 
-bool	check_channel_name(const std::string& channel_name)
+bool check_channel_name(const std::string& channel_name)
 {
-	 if (channel_name.empty() || (channel_name[0] != '#' && channel_name[0] != '&'))
-		return false;
-	else
-		return true;
+    if (channel_name.empty() || channel_name[0] != '#'\
+        || channel_name.size() < 3 || channel_name[1] == '.')
+        return false;
+    else
+        return true;
 }
 
 int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int i)
@@ -148,12 +149,12 @@ void	channel_not_exist(ft_irc &irc, int i, std::string channel_name, std::string
 	// Add user to new channel
 	it->addUser(irc, i);
 	it->addOperatorUser(nick, irc.client[i].nick);
+	it->have_op = true;
 
 }
 
 void join_command(ft_irc& irc, int i, const std::string& channel_name, const std::string& nick, const std::string& key)
 {
-
 	if (!check_channel_name(channel_name))
 	{
 		irc.msg = ":No such channel";

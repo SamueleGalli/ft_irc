@@ -3,8 +3,23 @@
 
 /*
 ERR_TOOMANYTARGETS
-ERR_NOSUCHNICK
-ERR_CANNOTSENDTOCHAN*/
+*/
+
+bool    valid_message(const std::string& target)
+{
+    size_t i = 0;
+    for (;target[i] == ' '; i++)
+    {        
+    }
+    if (target[i] != ' ' && target[i] != 0)
+        return true;
+    return false;
+}
+
+bool Channel::isMember(const client_info& user)
+{
+    return std::find(users.begin(), users.end(), user) != users.end();
+}
 
 void sendMessageToUser(ft_irc& irc, const std::string& sender, const std::string reciver, const std::string& message)
 {
@@ -17,15 +32,6 @@ void sendMessageToUser(ft_irc& irc, const std::string& sender, const std::string
         std::string full_message = reciver + " " + message; // `message` già include i caratteri di newline
         client_message(irc, userIndex, "PRIVMSG", full_message);
     }
-    else
-    {
-        // L'utente non esiste, invia un errore se l'indice è valido
-        /*if (userIndex != -1)
-        {
-            std::string errMsg = "401 " + nick + " :No such nick/channel";
-            client_message(irc, userIndex, "ERROR", errMsg); // Usa un comando di errore appropriato
-        }*/
-    }
 }
 
 void sendMessageToChannel(ft_irc& irc, const std::string& channelName, const std::string& message, client_info& sender)
@@ -34,39 +40,24 @@ void sendMessageToChannel(ft_irc& irc, const std::string& channelName, const std
     std::vector<Channel>::iterator channelIt = findChannel(channelName, irc.channels);
     if (channelIt != irc.channels.end())
     {
+        // Verifica se l'utente è membro del canale
+        if (!channelIt->isMember(sender))
+        {
+            std::string errMsg = "404 " + sender.nick + " " + channelName + " :Cannot send to channel\r\n";
+            send(sender.client_sock, errMsg.c_str(), errMsg.size(), 0);
+            return;
+        }
         // Il canale esiste
         std::string privmsg = ":" + sender.nick + " PRIVMSG " + channelName + message + "\r\n";
-        // Debug: stampa gli utenti del canale
-        std::cout << "Debug: Channel " << channelName << " found. Users count: " << channelIt->users.size() << std::endl;
-        
+
         // Invia il messaggio a tutti gli utenti del canale
         for (size_t i = 0; i < channelIt->users.size(); i++)
         {
             client_info user = channelIt->users[i];
-            std::cout << "User Nick: " << user.nick << " Socket FD: " << user.client_sock << std::endl;
             // Non inviare il messaggio al mittente
-            std::cout << "Sending message to user " << user.nick << " on socket " << user.client_sock << std::endl;
             send(user.client_sock, privmsg.c_str(), privmsg.size(), 0);
         }
     }
-    /*else
-    {
-        // Il canale non esiste, invia un errore al mittente
-        std::string errMsg = "403 " + channelName + " :No such channel\r\n";
-        send(sender.client_sock, errMsg.c_str(), errMsg.size(), 0);
-    }*/
-}
-
-bool    valid_message(const std::string& target)
-{
-    std::cout << "target: \'" << target << "\'" <<  std::endl;
-    size_t i = 0;
-    for (;target[i] == ' '; i++)
-    {        
-    }
-    if (target[i] != ' ' && target[i] != 0)
-        return true;
-    return false;
 }
 
 // Funzione per gestire il comando PRIVMSG
@@ -81,7 +72,6 @@ void privmsg_command(ft_irc& irc, int i, const std::string& target)
         send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
         return;
     }
-    
     std::string channel_name = target.substr(0, pos);
     std::string msg = target.substr(pos + 1);
     std::cout << msg << std::endl;
@@ -106,15 +96,6 @@ void privmsg_command(ft_irc& irc, int i, const std::string& target)
             send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
             return;
         }
-
-        /*// ERR_CANNOTSENDTOCHAN (404): L'utente non può inviare messaggi al canale (es. bannato)
-        if (!it->canSendMessage(irc.client[i]))
-        { 
-            std::string errMsg = "404 " + channel_name + " :Cannot send to channel\r\n";
-            send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
-            return;
-        }*/
-
         // Invia il messaggio a tutti i membri del canale
         sendMessageToChannel(irc, channel_name, msg, irc.client[i]);
     }
