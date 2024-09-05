@@ -35,8 +35,6 @@ void quit_command(ft_irc &irc, int i)
             break;
         }
     }
+    
     irc.client.erase(irc.client.begin() + i);
-
-    for (std::size_t j = i; j < irc.client.size(); ++j)
-        irc.p_fds[j].fd = irc.client[j].client_sock;
 }

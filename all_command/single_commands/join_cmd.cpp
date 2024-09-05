@@ -21,7 +21,7 @@ int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int 
 	}
 	else
 	{
-		irc.msg = ":" + irc.client[i].server + " 443 " + irc.client[i].nick + " " + channel._name + ":You are already on channel";
+		irc.msg = ":" + irc.client[i].server + " 443 " + irc.client[i].nick + " " + channel._name + " :You are already on channel";
 		client_message(irc, i, "", irc.msg);
 		return (1);
 	}
@@ -110,7 +110,7 @@ int channel_alredy_exist(ft_irc& irc, int i, const std::string& channel_name, co
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick, it->users);
 	if (user_it != it->users.end())
 	{
-		irc.msg = ":" + irc.client[i].server + " 443 " + irc.client[i].nick + " " + it->_name + ":You are already on channel";
+		irc.msg = ":" + irc.client[i].server + " 443 " + irc.client[i].nick + " " + it->_name + " :You are already on channel";
 		client_message(irc, i, "", irc.msg);
 		return (1);
 	}
