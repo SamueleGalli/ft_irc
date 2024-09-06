@@ -1,5 +1,7 @@
 #include "../../header/ft_irc.hpp"
 
+/*il topic puo essere cambiato da tutti lunico limite e +t 
+in mode che non lo fa cambiate da tutti ma solo operator*/
 void set_view_topic(ft_irc& irc, int i, Channel& channel, const std::string new_topic)
 {
 	std::string message;

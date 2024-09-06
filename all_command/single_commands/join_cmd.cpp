@@ -1,5 +1,6 @@
 #include "../../header/ft_irc.hpp"
 
+/*max number channel*/
 bool check_channel_name(const std::string& channel_name)
 {
     if (channel_name.empty() || channel_name[0] != '#'\

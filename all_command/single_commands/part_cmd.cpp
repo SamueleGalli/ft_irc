@@ -33,6 +33,14 @@ void part_command(ft_irc& irc, int i, const std::string& nick, const std::string
 	
 	// Remove user from list of user and in case from operator users if user is an operator
 	ch_iter->removeUser(nick);
+	for (std::vector<client_info>::iterator it = ch_iter->operatorUsers.begin(); it != ch_iter->operatorUsers.end(); ++it)
+    {
+        if (it->nick == nick)
+        {
+            ch_iter->operatorUsers.erase(it);
+            break;
+        }
+    }
 	if (ch_iter->_num_users <= 0 || ch_iter->operatorCount() <= 0)
 		ch_iter = irc.channels.erase(ch_iter);
 }

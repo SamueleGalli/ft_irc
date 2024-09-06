@@ -1,13 +1,7 @@
 #include "../../header/ft_irc.hpp"
 
-/*           ERR_NEEDMOREPARAMS              RPL_CHANNELMODEIS
-           ERR_CHANOPRIVSNEEDED            ERR_NOSUCHNICK
-           ERR_NOTONCHANNEL                ERR_KEYSET
-           RPL_BANLIST                     RPL_ENDOFBANLIST
-           ERR_UNKNOWNMODE                 ERR_NOSUCHCHANNEL
-           ERR_USERSDONTMATCH              RPL_UMODEIS
-           ERR_UMODEUNKNOWNFLAG
-*/
+/*rivedere MODE SHOW*/
+
 int valid_option(const std::string& option)
 {
 	if (option[0] == '-' || option[0]  == '+')
@@ -71,7 +65,7 @@ int set_users_limit_mode(const std::string& option, Channel& channel, const std:
 	return 1;
 }
 
-void set_key_mode(const std::string& option, Channel& channel, const std::string& key)
+int set_key_mode(const std::string& option, Channel& channel, const std::string& key, ft_irc& irc, int i)
 {
 	if (option[0] == '-')
 	{
@@ -80,12 +74,19 @@ void set_key_mode(const std::string& option, Channel& channel, const std::string
 	}
 	else if (option[0] == '+')
 	{
-		if (!key.empty())
+		if (channel.has_key == true)
+		{
+			std::string message = channel._name + " :Channel key already set";
+			send_error_message(irc, i, "467", message, irc.client[i].client_sock);
+			return 1;
+		}
+		else if (!key.empty())
 		{
 			channel.has_key = true;
 			channel._key = key;
 		}
 	}
+	return 0;
 }
 
 
@@ -110,10 +111,50 @@ int set_operator_mode(const std::string& option, Channel& channel, const std::st
 	return 1;
 }
 
+void show_mode(ft_irc& irc, int i, const std::string& channel_name)
+{
+	std::vector<Channel>::iterator ch_iter = findChannel(channel_name, irc.channels);
+	ch_iter->flags = "+" + ch_iter->flags;
+	std::string message = irc.client[i].nick + " " + channel_name;
+	if (ch_iter->flags[1] != 0)
+	{
+		message += " " + ch_iter->flags;
+		for (unsigned long int i = 1; i < ch_iter->flags.size(); i++)
+		{
+			if (ch_iter->flags[i] == 'i')
+				continue;
+			else if (ch_iter->flags[i] == 't')
+				continue;
+			else if (ch_iter->flags[i] == 'k' && ch_iter->isMember(irc.client[i]) == true)
+				message += " " + ch_iter->_key;
+			else if (ch_iter->flags[i] == 'o')
+			{
+				for (std::vector<std::string>::const_iterator it = ch_iter->flag_o.begin(); it != ch_iter->flag_o.end(); ++it)
+				{
+					const std::string& op = *it;
+					message += " &" + op;
+				}
+			}
+			else if (ch_iter->flags[i] == 'l')
+			{
+				std::ostringstream oss;
+				oss << ch_iter->_max_users;
+				std::string user_limit = oss.str();
+				message += " " + user_limit;
+			}
+		}
+	}
+	send_error_message(irc, i, "324", message, irc.client[i].client_sock);
+}
+
 void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string option, const std::string& option_param)
 {
+	if (option_param.empty())
+	{
+		show_mode(irc, i, channel_name);
+		return ;
+	}
 	std::string message;
-	unsigned long int t;
 	
 	// Find the channel
 	std::vector<Channel>::iterator ch_iter = findChannel(channel_name, irc.channels);
@@ -125,6 +166,13 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	}
 	// Control if the user is on channel. if not -> ERR_NOTONCHANNEL
 	
+	if (ch_iter->isMember(irc.client[i]) == false)
+	{
+		message = channel_name + " :they're not on that channel";
+		send_error_message(irc, i, "442", message, irc.client[i].client_sock);
+		return;
+	}
+
 	// Control if who sended cmd is a channel operator
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
@@ -154,16 +202,21 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 		}
 	}
 	else if (option[1] == 'k')
-		set_key_mode(option, *ch_iter, option_param);
+	{
+		if (set_key_mode(option, *ch_iter, option_param, irc, i) == 1)
+			return;
+	}
 	else if (option[1] == 'o')
 	{
+		ch_iter->flag_o.push_back(option_param);
 		if (!set_operator_mode(option, *ch_iter, option_param))
 		{
 			send_error_message(irc, i, "401", ":No such nick.", irc.client[i].client_sock);
 			return;
 		}
 	}
-	message = ch_iter->_name + " " + option;
+	ch_iter->flags = ch_iter->flags + option[1];
+/* 	message = ch_iter->_name + " " + option;
 	for (t = 0; t < ch_iter->users.size(); t++)
-		client_message(irc, t, "MODE", message);
+		client_message(irc, t, "MODE", message); */
 }
