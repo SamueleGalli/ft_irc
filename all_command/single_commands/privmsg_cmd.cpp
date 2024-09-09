@@ -4,7 +4,11 @@ const size_t MAX_RECIPIENTS = 3;
 
 bool Channel::isMember(const client_info& user)
 {
-    return std::find(users.begin(), users.end(), user) != users.end();
+    if (std::find(users.begin(), users.end(), user) != users.end() == true)
+        return true;
+    else if (std::find(operatorUsers.begin(), operatorUsers.end(), user) != operatorUsers.end() == true)
+        return true;
+    return false;
 }
 
 void sendMessageToUser(ft_irc& irc, const std::string& sender, const std::string reciver, const std::string& message)

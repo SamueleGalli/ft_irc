@@ -33,6 +33,7 @@ void part_command(ft_irc& irc, int i, const std::string& nick, const std::string
 	
 	// Remove user from list of user and in case from operator users if user is an operator
 	ch_iter->removeUser(nick);
+	ch_iter->removeInvited(nick);
 	for (std::vector<client_info>::iterator it = ch_iter->operatorUsers.begin(); it != ch_iter->operatorUsers.end(); ++it)
     {
         if (it->nick == nick)

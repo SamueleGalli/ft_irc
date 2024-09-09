@@ -56,8 +56,8 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 	
 	//Channel found
 	// If user is not operator -> cannot change topic
-	message = it->_name + " :they're not on that channel";
-	if (!it->topic_all_users)
+	message = it->_name + " :They're not on that channel";
+	if (it->topic_limited)
 	{
 		if (findUserInChannel(oper_name, it->users) == it->users.end())
 		{
@@ -66,7 +66,7 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		}
 		if (!new_topic.empty() && !isOperator(oper_name, it->operatorUsers))
 		{
-			send_error_message(irc, i, "482", ":they're not channel operator.", irc.client[i].client_sock);
+			send_error_message(irc, i, "482", ":They're not channel operator.", irc.client[i].client_sock);
 			return;
 		}
 		else

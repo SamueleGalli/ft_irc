@@ -1,10 +1,13 @@
 #include "../../header/ft_irc.hpp"
 
-/*max number channel*/
+/*
+JOIN "#SO sad dos fa" cosee
+max number channel
+*/
 bool check_channel_name(const std::string& channel_name)
 {
     if (channel_name.empty() || channel_name[0] != '#'\
-        || channel_name.size() < 3 || channel_name[1] == '.')
+        || channel_name.size() < 4 || channel_name[1] == '.')
         return false;
     else
         return true;
@@ -14,9 +17,9 @@ int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int 
 {
 	if (!userAlreadyInChannel(channel, nick))
 	{
-		//channel.addUser(nick);
+		/*channel.addUser(nick);
 		if (userReceivedInvite(channel, nick))
-			channel.removeInvited(nick);
+			channel.removeInvited(nick);*/
 		irc.msg = nick + " has joined the channel " + channel._name;
 		return (0);
 	}
@@ -102,6 +105,13 @@ int invite_only(ft_irc& irc, int i, const std::string& channel_name, const std::
 	}
 	if (!irc.msg.empty())
 		client_message(irc, i, "JOIN", irc.msg);
+	if (!irc.msg.empty())
+	{
+		//Send to all clients in channel
+		irc.msg = ":" + irc.client[i].nick + "!" + irc.client[i].user + "&" + irc.client[i].host + " JOIN :" + channel_name + "\r\n";
+		for (unsigned long int t = 0; t < it->users.size(); t++)
+			send(irc.client[t].client_sock, irc.msg.c_str(), irc.msg.length(), 0);
+	}
 	//TODO send to all clients in channel
 	return (0);
 }
@@ -171,16 +181,12 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 		if (channel_alredy_exist(irc, i, channel_name, nick, it, key) == 1)
 			return;
 	}
-	
 	if (!userAlreadyInChannel(*it, nick))
 		it->addUser(irc, i);
 
 	irc.msg = "";
 	reply_to_channel(irc, i, it);
-	std::cout << "\n**CHANNEL USERS**\n" << std::endl;
+	/*std::cout << "\n**CHANNEL USERS**\n" << std::endl;
 	for (std::vector<client_info>::iterator u_it = it->users.begin(); u_it != it->users.end(); ++u_it)
-	{
-		std::cout << u_it->user << std::endl;
-	}
-    // TODO: Verifica il tipo di canale. Se è "invite-only", solo gli utenti invitati dall'operatore possono unirsi.
+		std::cout << u_it->user << std::endl;*/
 }
