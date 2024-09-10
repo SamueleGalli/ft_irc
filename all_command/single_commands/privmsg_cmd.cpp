@@ -45,6 +45,29 @@ void sendMessageToChannel(ft_irc& irc, const std::string& channelName, const std
     }
 }
 
+int invalid_command(ft_irc& irc, int i, const std::string& recipients)
+{
+    std::stringstream ss(recipients);
+    std::vector<std::string> individual_target;
+    std::string individual_targets;
+    while (std::getline(ss, individual_targets, ','))
+    {
+        size_t dot = individual_targets.find(":");
+        // Stampa il target
+        // Controlla se ':' è stato trovato
+        if (dot != std::string::npos && dot > 0) // Assicura che ci sia qualcosa prima del ':'
+        {
+            // Verifica se il carattere prima del ':' è uno spazio
+            if (individual_targets[dot - 1] != ' ')
+            {
+                send_error_message(irc, i, "421", ":Unknown command", irc.client[i].client_sock);
+                return (1);
+            }
+        }
+    }
+    return (0);
+}
+
 void privmsg_command(ft_irc& irc, int i, const std::string& target)
 {
     if (target.empty() || target[0] == ':')
@@ -76,6 +99,8 @@ void privmsg_command(ft_irc& irc, int i, const std::string& target)
             return;
         }
     }
+    if (invalid_command(irc, i, recipients) == 1)
+        return;
     if (msg.empty())
     {
         std::string errMsg = "412 " + irc.client[i].nick + " :No text to send\r\n";
