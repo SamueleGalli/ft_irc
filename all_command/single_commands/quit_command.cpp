@@ -27,9 +27,6 @@ void quit_command(ft_irc &irc, int i, const std::string& comment)
 		}
 		irc.client[t].quit_received = false;
 	}
-	
-	
-		
         std::vector<Channel>::iterator it = irc.channels.begin();
         while (it != irc.channels.end())
         {
