@@ -2,8 +2,9 @@
 
 /*
 JOIN "#SO sad dos fa" cosee
-max number channel
 */
+
+const int MAX_CHANNELS_PER_USER = 3;  // Numero massimo di canali per utente
 bool check_channel_name(const std::string& channel_name)
 {
     if (channel_name.empty() || channel_name[0] != '#'\
@@ -72,6 +73,7 @@ void	reply_to_channel(ft_irc& irc, int i, std::vector<Channel>::iterator it)
 
 int invite_only(ft_irc& irc, int i, const std::string& channel_name, const std::string& nick, std::vector<Channel>::iterator it, const std::string& key)
 {
+	unsigned long int t;
 	if (it->users_limit && it->_num_users >= it->_max_users)
 	{
 		//client_message(irc, i, "JOIN", message);
@@ -104,15 +106,11 @@ int invite_only(ft_irc& irc, int i, const std::string& channel_name, const std::
 			return (1);
 	}
 	if (!irc.msg.empty())
-		client_message(irc, i, "JOIN", irc.msg);
-	if (!irc.msg.empty())
 	{
 		//Send to all clients in channel
-		irc.msg = ":" + irc.client[i].nick + "!" + irc.client[i].user + "&" + irc.client[i].host + " JOIN :" + channel_name + "\r\n";
-		for (unsigned long int t = 0; t < it->users.size(); t++)
-			send(irc.client[t].client_sock, irc.msg.c_str(), irc.msg.length(), 0);
+		for (t = 0; t < it->users.size(); t++)
+				client_message_all_users(irc, i, (int)t, "JOIN", irc.msg);
 	}
-	//TODO send to all clients in channel
 	return (0);
 }
 
@@ -161,11 +159,26 @@ void	channel_not_exist(ft_irc &irc, int i, std::string channel_name, std::string
 	it->addUser(irc, i);
 	it->addOperatorUser(nick, irc.client[i].nick);
 	it->have_op = true;
+	it->has_key = false;
 
 }
 
 void join_command(ft_irc& irc, int i, const std::string& channel_name, const std::string& nick, const std::string& key)
 {
+	// Verifica se l'utente ha raggiunto il limite massimo di canali
+    int user_channels = 0;
+    for (std::vector<Channel>::iterator it = irc.channels.begin(); it != irc.channels.end(); ++it)
+    {
+        if (userAlreadyInChannel(*it, nick))
+            user_channels++;
+    }
+    // Se l'utente ha raggiunto il limite massimo, invia ERR_TOOMANYCHANNELS
+    if (user_channels >= MAX_CHANNELS_PER_USER)
+    {
+        irc.msg = ":" + irc.client[i].server + " 405 " + irc.client[i].nick + " " + channel_name + " :You have joined too many channels";
+        client_message(irc, i, "", irc.msg);
+        return;
+    }
 	if (!check_channel_name(channel_name))
 	{
 		irc.msg = ":No such channel";
@@ -174,10 +187,23 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	}
 	// Trova il canale
 	std::vector<Channel>::iterator it = findChannel(channel_name, irc.channels);
-	if (it == irc.channels.end()) 
+	std::cout << key << std::endl;
+	if (it == irc.channels.end())
+	{
+		if (!key.empty())
+		{
+			send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
+			return;
+		}
 		channel_not_exist(irc, i, channel_name, nick, it);
+	}
 	else // Il canale esiste già
 	{
+		if (!key.empty() && it->has_key == false)
+		{
+			send_error_message(irc, i, "461", ":Not enough parameters.", irc.client[i].client_sock);
+			return;
+		}
 		if (channel_alredy_exist(irc, i, channel_name, nick, it, key) == 1)
 			return;
 	}
@@ -186,7 +212,4 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 
 	irc.msg = "";
 	reply_to_channel(irc, i, it);
-	/*std::cout << "\n**CHANNEL USERS**\n" << std::endl;
-	for (std::vector<client_info>::iterator u_it = it->users.begin(); u_it != it->users.end(); ++u_it)
-		std::cout << u_it->user << std::endl;*/
 }

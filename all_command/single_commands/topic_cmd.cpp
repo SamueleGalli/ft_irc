@@ -24,7 +24,7 @@ void set_view_topic(ft_irc& irc, int i, Channel& channel, const std::string new_
 		if(!new_topic.empty())
 		{
 			for (t = 0; t < channel.users.size(); t++)
-				client_message(irc, t, "TOPIC", message);
+				client_message_all_users(irc, i, (int)t, "TOPIC", message);
 		}
 		else
 			client_message(irc, i, "TOPIC", message);

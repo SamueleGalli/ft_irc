@@ -78,7 +78,7 @@ int set_key_mode(const std::string& option, Channel& channel, const std::string&
 			send_error_message(irc, i, "467", message, irc.client[i].client_sock);
 			return 1;
 		}
-		else if (!key.empty() && !key.empty())
+		else if (!key.empty())
 		{
 			channel.has_key = true;
 			channel._key = key;
