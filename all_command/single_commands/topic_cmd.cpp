@@ -10,29 +10,31 @@ void set_view_topic(ft_irc& irc, int i, Channel& channel, const std::string new_
 	if (new_topic.empty())
 	{
 		channel._topic = "";
-		message = ":" + irc.client[i].server + " 331 " + irc.client[i].nick + " " + channel._name + " :No topic is set";
+		message = channel._name + " :No topic is set";
 		for (t = 0; t < channel.users.size(); t++)
-			client_message(irc, t, "TOPIC", message);
+			client_message_all_users(irc, t, i, "TOPIC", message);
 		return ;
 	}
 	if (!new_topic.empty())
-		channel._topic = new_topic;
-	if (!channel._topic.empty())
 	{
-		message = ":" + irc.client[i].server + " 332 " + irc.client[i].nick + " " + channel._name + " :" + channel._topic;
-		
-		if(!new_topic.empty())
-		{
-			for (t = 0; t < channel.users.size(); t++)
-				client_message_all_users(irc, i, (int)t, "TOPIC", message);
-		}
-		else
-			client_message(irc, i, "TOPIC", message);
+		channel._topic = new_topic;
+		message =channel._name + " :" + channel._topic;
+		for (t = 0; t < channel.users.size(); t++)
+			client_message_all_users(irc, i, t, "TOPIC", message);
+	}
+}
+
+void	show_topic(ft_irc& irc, int i, const std::string& channel_name, std::string message, Channel& it)
+{
+	if (it._topic.empty())
+	{
+		message = channel_name + " :No topic is set";
+		send_error_message(irc, i, "331", message, irc.client[i].client_sock);
 	}
 	else
 	{
-		message = ":" + irc.client[i].server + " 331 " + irc.client[i].nick + " " + channel._name + " :No topic is set";
-		client_message(irc, i, "", message);
+		message = channel_name + " :" + it._topic;
+		send_error_message(irc, i, "332", message, irc.client[i].client_sock);
 	}
 }
 
@@ -40,11 +42,8 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 {
 	std::string message;
 	std::vector<client_info>::iterator oper_it;
-	
-	
 	// Find channel
 	std::vector<Channel>::iterator it = findChannel(channel_name, irc.channels);
-	
 	// Find user in channel
 	if (it != irc.channels.end())
 		oper_it = findUserInChannel(oper_name, it->users);
@@ -53,12 +52,18 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		send_error_message(irc, i, "403", ":No such channel.", irc.client[i].client_sock);
 		return;
 	}
-	
+	if (new_topic.empty() && second_command(irc).find(":") == std::string::npos)
+	{
+		show_topic(irc, i, channel_name, message,  *it);
+		return ; 
+	}
 	//Channel found
 	// If user is not operator -> cannot change topic
 	message = it->_name + " :They're not on that channel";
+	message = it->_name + " :They're not on that channel";
 	if (it->topic_limited)
 	{
+		std::cout << "operator" << std::endl;
 		if (findUserInChannel(oper_name, it->users) == it->users.end())
 		{
 			send_error_message(irc, i, "442", message, irc.client[i].client_sock);
@@ -76,6 +81,12 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 	}
 	else
 	{
+		std::cout << "not operator" << std::endl;
+		if (findUserInChannel(oper_name, it->users) == it->users.end())
+		{
+			send_error_message(irc, i, "442", message, irc.client[i].client_sock);
+			return;
+		}
 		set_view_topic(irc, i, *it, new_topic);	
 	}
 }
