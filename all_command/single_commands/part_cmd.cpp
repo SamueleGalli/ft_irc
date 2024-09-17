@@ -45,9 +45,7 @@ void part_command(ft_irc& irc, int i, const std::string& nick, const std::string
 	std::string message;
 	long unsigned int t;
 	
-	std::cout << nick << " PART COMMAND " << channel_name << std::endl;
-	//irc = irc;
-	//i = i;
+	//std::cout << nick << " PART COMMAND " << channel_name << std::endl;
 	
 	// Check if channel exists
 	std::vector<Channel>::iterator ch_iter = findChannel(channel_name, irc.channels);
@@ -69,19 +67,19 @@ void part_command(ft_irc& irc, int i, const std::string& nick, const std::string
 	if (extract_message(second_command(irc)) != "")
 		message += " :" + extract_message(second_command(irc));
 	for (t = 0; t < ch_iter->users.size(); t++)
-		client_message_all_users(irc, i, (int)t, "PART", message);
+		client_message_in_channel(irc, *ch_iter, i, (int)t, "PART", message);
 	
 	// Remove user from list of user and in case from operator users if user is an operator
 	ch_iter->removeUser(nick);
 	ch_iter->removeInvited(nick);
 	for (std::vector<client_info>::iterator it = ch_iter->operatorUsers.begin(); it != ch_iter->operatorUsers.end(); ++it)
-    {
-        if (it->nick == nick)
-        {
-            ch_iter->operatorUsers.erase(it);
-            break;
-        }
-    }
+	{
+		if (it->nick == nick)
+		{
+			ch_iter->operatorUsers.erase(it);
+			break;
+		}
+	}
 	if (ch_iter->_num_users <= 0 || ch_iter->operatorCount() <= 0)
 		ch_iter = irc.channels.erase(ch_iter);
 	update_channel_list(irc, i, *ch_iter);

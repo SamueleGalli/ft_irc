@@ -40,24 +40,26 @@ void Channel::addUser(ft_irc &irc, int i)
 void Channel::DeleteUserFromChannel(ft_irc& irc, int i)
 {
     std::string nick = irc.client[i].nick;
-
-    // Rimuovi l'utente da users
-    for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it)
+    if (!operatorUsers.empty())
     {
-        if (it->nick == nick)
+        for (std::vector<client_info>::iterator it = operatorUsers.begin(); it != operatorUsers.end(); ++it)
         {
-            removeUser(nick);
-            break;
+            if (it->nick == nick)
+            {
+                removeOperator(nick);
+                break;
+            }
         }
     }
-
-    // Rimuovi l'utente da operatorUsers
-    for (std::vector<client_info>::iterator it = operatorUsers.begin(); it != operatorUsers.end(); ++it)
+    if (!users.empty())
     {
-        if (it->nick == nick)
+        for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it)
         {
-            removeOperator(nick);
-            break;
+            if (it->nick == nick)
+            {
+                removeUser(nick);
+                break;
+            }
         }
     }
 }

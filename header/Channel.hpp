@@ -44,7 +44,7 @@ class Channel
 
 	    bool channelHasName(const std::string& name) const;
 		bool isMember(const client_info& user);
-
+		bool isMemberOperator(const client_info& user_operator);
 	    void DeleteUserFromChannel(ft_irc& irc, int i);
 	    void addUser(ft_irc &irc, int i);
 	    void addOperatorUser(const std::string& oper_name, const std::string& nick);

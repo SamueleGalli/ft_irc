@@ -11,17 +11,14 @@ void set_view_topic(ft_irc& irc, int i, Channel& channel, const std::string new_
 	{
 		channel._topic = "";
 		message = channel._name + " :No topic is set";
-		for (t = 0; t < channel.users.size(); t++)
-			client_message_all_users(irc, t, i, "TOPIC", message);
-		return ;
 	}
-	if (!new_topic.empty())
+	else
 	{
 		channel._topic = new_topic;
 		message =channel._name + " :" + channel._topic;
-		for (t = 0; t < channel.users.size(); t++)
-			client_message_all_users(irc, i, t, "TOPIC", message);
 	}
+	for (t = 0; t < channel.users.size(); t++)
+		client_message_in_channel(irc, channel, i, (int)t, "TOPIC", message);
 }
 
 void	show_topic(ft_irc& irc, int i, const std::string& channel_name, std::string message, Channel& it)
@@ -42,9 +39,7 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 {
 	std::string message;
 	std::vector<client_info>::iterator oper_it;
-	// Find channel
 	std::vector<Channel>::iterator it = findChannel(channel_name, irc.channels);
-	// Find user in channel
 	if (it != irc.channels.end())
 		oper_it = findUserInChannel(oper_name, it->users);
 	else
@@ -57,9 +52,6 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		show_topic(irc, i, channel_name, message,  *it);
 		return ; 
 	}
-	//Channel found
-	// If user is not operator -> cannot change topic
-	message = it->_name + " :They're not on that channel";
 	message = it->_name + " :They're not on that channel";
 	if (it->topic_limited)
 	{

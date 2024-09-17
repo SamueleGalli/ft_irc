@@ -2,11 +2,6 @@
 #include "../../header/Channel.hpp"
 const size_t MAX_RECIPIENTS = 3;
 
-bool Channel::isMember(const client_info& user)
-{
-    return std::find(users.begin(), users.end(), user) != users.end();
-}
-
 void sendMessageToUser(ft_irc& irc, const std::string& sender, const std::string reciver, const std::string& message)
 {
     int userIndex = get_user_index(irc.client, sender);

@@ -13,11 +13,14 @@ void    commands(ft_irc &irc, int i)
     	list_command(irc, i);
     else if (first_command(irc) == "PRIVMSG")
     {
-        target = trim(second_command(irc));  // Estrai il target (utente o canale)
+        target = trim(second_command(irc));
         privmsg_command(irc, i, target);
     }
     else
+    {
+        std::cout << "message => " << irc.buffer << std::endl;
         send_error_message(irc, i, "421", message, irc.client[i].client_sock);
+    }
 }
 
 void    autentication(ft_irc &irc, int i)
@@ -115,7 +118,6 @@ int registretion(ft_irc &irc, int i)
 
 int handle_command(ft_irc &irc, int i)
 {
-    i--;
     if (registretion(irc, i) == 1)
         return (1);
     return 0;

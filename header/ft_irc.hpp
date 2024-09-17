@@ -96,6 +96,8 @@ std::string extract_message(const std::string &buffer);
 std::vector<Channel>::iterator	findChannel(const std::string& channel_name, std::vector<Channel>& channels);
 std::vector<client_info>::iterator	findUserInChannel(const std::string& user_name, std::vector<client_info>& users);
 
+void    update_user_list(ft_irc& irc, int i, std::vector<Channel>::iterator it);
+void    quitting_channels(ft_irc& irc, int i, unsigned int t, std::string& message);
 void    client_message_all_users(ft_irc &irc, int i, int t, const std::string &command, const std::string &ex_message);
 void    removeChars(std::string& str, const char charsToRemove);
 void    part_command(ft_irc& irc, int i, const std::string& user_name, const std::string& channel_name);
@@ -115,12 +117,13 @@ void    colored_message(const std::string message, const std::string color);
 void    welcome_msg(ft_irc &irc, int i);
 void    send_error_message(ft_irc &irc, int i, const std::string err_code, const std::string &message, int sock);
 void    nick_command(ft_irc &irc, int i);
-void	kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name);
+void    kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& nick_name, const std::string& comment) ;
 void	topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& new_topic);
 void	invite_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string& user_name);
 void    join_command(ft_irc& irc, int i, const std::string& channel_names, const std::string& user_name, const std::string& key);
 void	mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string option, const std::string& option_param);
 void    privmsg_command(ft_irc& irc, int i, const std::string& target);
+void    client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message);
 
 bool	isOperator(const std::string& oper_name, std::vector<client_info>& operatorUsers);
 bool	userReceivedInvite(Channel& channel, const std::string& nick);

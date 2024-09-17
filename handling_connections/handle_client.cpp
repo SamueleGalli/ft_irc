@@ -1,43 +1,27 @@
 #include "../header/ft_irc.hpp"
 
-/*
-se crei 2 client ogniuno crea il suo canale e
-esempio
-client 1 #SAS
-client 2 #SOS
-e client 1 entra in #SOS
-e client 2 entra in #SAS
-se poi il primo client esce.
-poi non posso creare una altra connessione con lo stesso perche non mi entra in accepts_connection
-e leakka perche indice del client e negativo
-*/
 int process_incoming_data(ft_irc &irc, int i)
 {
     if (irc.server_suspended)
         return 0;
     ssize_t bytes = recv(irc.p_fds[i].fd, irc.buffer, sizeof(irc.buffer) - 1, 0);
-    if (bytes <= 0)
+    i--;
+    if (bytes == 0)
     {
-        close(irc.p_fds[i].fd);
-        irc.p_fds.erase(irc.p_fds.begin() + i);
-        irc.client.erase(irc.client.begin() + i);
-
-        if (bytes < 0)
+        std::cout << "you pressed CTRL-C" << std::endl;
+        if (!irc.channels.empty())
         {
-            perror("recv");
-            std::cerr << "🚨Error: (connection closed)🚨" << std::endl;
+
+            std::string messages;
+            quitting_channels(irc, i, 0, messages);
         }
-
-        return 1;
     }
-
     irc.buffer[bytes] = '\0';
     if (first_command(irc) == "CAP" && trim(second_command(irc)) == "LS 302")
         return 0;
 
     if (handle_command(irc, i) == 1)
         return 1;
-
     return 0;
 }
 
