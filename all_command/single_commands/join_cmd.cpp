@@ -25,56 +25,18 @@ int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int 
 	}
 }
 
-void	reply_to_channel(ft_irc& irc, int i, std::vector<Channel>::iterator it)
+void	reply_to_channel(ft_irc& irc, int i, Channel &channel_name)
 {
 	std::string message;
-	std::string users_list;
-	
-	message =" = " + it->_name + " :";
-	for (std::vector<client_info>::iterator op_it = it->operatorUsers.begin(); op_it != it->operatorUsers.end(); ++op_it)
-		users_list += "@" + op_it->nick + " ";
-	std::vector<client_info>::iterator op_it = it->operatorUsers.begin();
-	bool is_operator = false;
-	for (std::vector<client_info>::iterator user_it = it->users.begin(); user_it != it->users.end(); ++user_it)
-	{
-		for (;op_it != it->operatorUsers.end(); ++op_it)
-		{
-			if (user_it->nick == op_it->nick)
-			{
-				is_operator = true;
-				break;
-			}
-		}
-		if (is_operator == true)
-		{
-			is_operator = false;
-			continue;
-		}
-		users_list += user_it->nick + " ";
-	}
-
-	message += users_list;
-	unsigned long int t;
-	
-	for (t = 0; t < it->users.size(); t++)
-	{
-		if (it->isMember(irc.client[t]) == true || it->isMemberOperator(irc.client[t]) == true)
-			send_error_message(irc, i, "353", message, irc.client[t].client_sock);
-	}
-	message =it->_name + " :End of /NAMES list";
-	for (t = 0; t < it->users.size(); t++)
-	{
-		if (it->isMember(irc.client[t]) == true || it->isMemberOperator(irc.client[t]) == true)
-			send_error_message(irc, i, "366", message, irc.client[t].client_sock);
-	}
+	update_channel_list(irc, channel_name);
 	std::string num = "332";
-	if (it->_topic.empty())
+	if (channel_name._topic.empty())
 	{
 		num = "331";
-		message =it->_name + " :No topic is set";
+		message =channel_name._name + " :No topic is set";
 	}
 	else
-		message =it->_name + " :" + it->_topic;
+		message =channel_name._name + " :" + channel_name._topic;
 	send_error_message(irc, i, num, message, irc.client[i].client_sock);
 }
 
@@ -142,7 +104,7 @@ void	create_channel(ft_irc &irc, int i, std::string channel_name, std::string ni
 	irc.channels.push_back(new_channel);
 	it = irc.channels.end() - 1;
 	it->addUser(irc, i);
-	it->addOperatorUser(nick, irc.client[i].nick);
+	it->addOperatorUser(nick, irc.client[i].nick, irc.client[i].client_sock);
 	it->have_op = true;
 	it->has_key = false;
 }
@@ -195,6 +157,6 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
 	irc.msg = channel_name;
 	for (t = 0; t < it->users.size(); t++)
 		client_message_in_channel(irc, *it, i, (int)t, "JOIN", irc.msg);
-	reply_to_channel(irc, i, it);
+	reply_to_channel(irc, i, *it);
 	irc.msg = "";
 }

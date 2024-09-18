@@ -20,8 +20,8 @@ void client_message_all_users(ft_irc &irc, int i, int t, const std::string &comm
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host;
     else
         message = ":" + irc.client[i].nick + "!" + irc.client[i].user + "@" + irc.client[i].host + " " + command;
-    message = message + " " + ex_message;
-    message = message + "\r\n";
+    message += " " + ex_message;
+    message += "\r\n";
     send(irc.client[t].client_sock, message.c_str(), message.length(), 0);
 }
 

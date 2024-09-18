@@ -88,6 +88,7 @@ int     check_number_of_arguments(std::string command);
 int     nick_exist(std::vector<client_info>& clients, const std::string& nickname);
 int     get_user_index(std::vector<client_info>& clients, const std::string& nickname);
 
+std::string user_list(Channel& channel_name);
 std::string first_command(ft_irc irc);
 std::string second_command(ft_irc irc);
 std::string trim(const std::string& str);
@@ -124,6 +125,8 @@ void    join_command(ft_irc& irc, int i, const std::string& channel_names, const
 void	mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::string& channel_name, const std::string option, const std::string& option_param);
 void    privmsg_command(ft_irc& irc, int i, const std::string& target);
 void    client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message);
+void    quitting_channels(ft_irc& irc, int i);
+void    update_channel_list(ft_irc& irc, Channel& channel_name);
 
 bool	isOperator(const std::string& oper_name, std::vector<client_info>& operatorUsers);
 bool	userReceivedInvite(Channel& channel, const std::string& nick);

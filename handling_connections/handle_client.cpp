@@ -9,12 +9,9 @@ int process_incoming_data(ft_irc &irc, int i)
     if (bytes == 0)
     {
         std::cout << "you pressed CTRL-C" << std::endl;
-        if (!irc.channels.empty())
-        {
-
-            std::string messages;
-            quitting_channels(irc, i, 0, messages);
-        }
+        std::string messages;
+        quitting_channels(irc, i);
+        return 1;
     }
     irc.buffer[bytes] = '\0';
     if (first_command(irc) == "CAP" && trim(second_command(irc)) == "LS 302")

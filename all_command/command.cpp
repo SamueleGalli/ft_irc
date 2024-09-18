@@ -17,10 +17,7 @@ void    commands(ft_irc &irc, int i)
         privmsg_command(irc, i, target);
     }
     else
-    {
-        std::cout << "message => " << irc.buffer << std::endl;
         send_error_message(irc, i, "421", message, irc.client[i].client_sock);
-    }
 }
 
 void    autentication(ft_irc &irc, int i)

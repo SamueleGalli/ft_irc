@@ -29,12 +29,14 @@ void quit_command(ft_irc &irc, int i, const std::string& comment)
         std::vector<Channel>::iterator it = irc.channels.begin();
         while (it != irc.channels.end())
         {
-		it->DeleteUserFromChannel(irc, i);
+			it->DeleteUserFromChannel(irc, i);
 
-		if (it->_num_users <= 0 || it->operatorCount() <= 0)
-			it = irc.channels.erase(it);
-		else
-			++it;
+			if (it->_num_users <= 0)
+				it = irc.channels.erase(it);
+			else if (it->operatorCount() <= 0)
+				it->next_operator();
+			else
+				++it;
         }
     }
     std::string secondCmd = second_command(irc);
