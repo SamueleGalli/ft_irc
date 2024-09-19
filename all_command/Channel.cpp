@@ -121,10 +121,6 @@ bool Channel::channelHasName(const std::string& name) const
 
 void    Channel::next_operator(void)
 {
-    for (std::vector<client_info>::iterator it = operatorUsers.begin(); it != operatorUsers.end(); ++it)
-    {
-        std::cout << "Next operator: " << it->nick << std::endl;
-    }
     if (operatorUsers.empty())
         addOperatorUser(users[0].user, users[0].nick, users[0].client_sock);
 }

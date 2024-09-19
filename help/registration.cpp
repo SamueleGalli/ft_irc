@@ -73,7 +73,7 @@ int cont_check_nick(ft_irc &irc, int i, const std::string &nick)
     std::string error_msg;
     if (nick.length() > 9)
     {
-        error_msg = nick + " :Erroneous nickname";
+        error_msg = ":Erroneous nickname";
         send_error_message(irc, i, "432", error_msg, irc.client[i].client_sock);
         return (1);
     }
@@ -87,7 +87,7 @@ int cont_check_nick(ft_irc &irc, int i, const std::string &nick)
             num = 1;
         if (!std::isalnum(nick[j]) && nick[j] != '-' && nick[j] != '.')
         {
-            error_msg = nick + " :Erroneous nickname";
+            error_msg = ":Erroneous nickname";
             send_error_message(irc, i, "432", error_msg, irc.client[i].client_sock);
             return (1);
         }
@@ -95,7 +95,7 @@ int cont_check_nick(ft_irc &irc, int i, const std::string &nick)
     if (alpha == 0 || num == 0 || nick[0] == '.' || nick[nick.length() - 1] == '.' || \
     nick[0] == '-' || nick[nick.length() - 1] == '-')
     {
-        error_msg = nick + " :Erroneous nickname";
+        error_msg = ":Erroneous nickname";
         send_error_message(irc, i, "432", error_msg, irc.client[i].client_sock);
         return (1);
     }
@@ -107,7 +107,7 @@ int check_nick(const std::string &nick, ft_irc &irc, int i)
 {
     if (nick.empty())
     {
-        send_error_message(irc, i, "431", ": no nickname given", irc.client[i].client_sock);
+        send_error_message(irc, i, "431", "no nickname given", irc.client[i].client_sock);
         return (1);
     }
     else if (i >= 1)
@@ -135,13 +135,13 @@ void    process_pass_command(ft_irc &irc, int i)
         pass = extract_message(pass);
     if (pass.empty())
     {
-        std::string message = first_command(irc) + " : Not enough parameters";
+        std::string message = first_command(irc) + " :Not enough parameters";
         send_error_message(irc, i, "461", message, irc.client[i].client_sock);
     }
     else if (pass == irc.pass_server)
         irc.client[i].is_pass = true;
     else
-        send_error_message(irc, i, "464", ": Password incorrect", irc.client[i].client_sock);
+        send_error_message(irc, i, "464", "Password incorrect", irc.client[i].client_sock);
 }
 
 int user_command(ft_irc &irc, int i)

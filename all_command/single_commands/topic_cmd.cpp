@@ -52,10 +52,9 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		show_topic(irc, i, channel_name, message,  *it);
 		return ; 
 	}
-	message = it->_name + " :They're not on that channel";
+	message = it->_name + " :You're not on that channel";
 	if (it->topic_limited)
 	{
-		std::cout << "operator" << std::endl;
 		if (findUserInChannel(oper_name, it->users) == it->users.end())
 		{
 			send_error_message(irc, i, "442", message, irc.client[i].client_sock);
@@ -63,7 +62,7 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 		}
 		if (!new_topic.empty() && !isOperator(oper_name, it->operatorUsers))
 		{
-			send_error_message(irc, i, "482", ":They're not channel operator.", irc.client[i].client_sock);
+			send_error_message(irc, i, "482", ":You're not channel operator.", irc.client[i].client_sock);
 			return;
 		}
 		else
@@ -73,7 +72,6 @@ void topic_command(ft_irc& irc, int i, const std::string& oper_name, const std::
 	}
 	else
 	{
-		std::cout << "not operator" << std::endl;
 		if (findUserInChannel(oper_name, it->users) == it->users.end())
 		{
 			send_error_message(irc, i, "442", message, irc.client[i].client_sock);

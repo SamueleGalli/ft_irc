@@ -13,7 +13,7 @@ void sendMessageToUser(ft_irc& irc, const std::string& sender, const std::string
     }
 }
 
-void sendMessageToChannel(ft_irc& irc, const std::string& channelName, const std::string& message, client_info& sender)
+void sendMessageToChannel(ft_irc& irc, int t, const std::string& channelName, const std::string& message, client_info& sender)
 {
     // Trova il canale
     std::vector<Channel>::iterator channelIt = findChannel(channelName, irc.channels);
@@ -32,10 +32,11 @@ void sendMessageToChannel(ft_irc& irc, const std::string& channelName, const std
         // Invia il messaggio a tutti gli utenti del canale
         for (size_t i = 0; i < channelIt->users.size(); i++)
         {
-            if (sender.client_sock != irc.client[i].client_sock)
+            std::cout << "client = " << irc.client[i].nick << std::endl;
+            std::cout << "sender = " << sender.nick << std::endl;
+            if (channelIt->users[i].nick != irc.client[t].nick)
             {
                 client_info user = channelIt->users[i];
-                // Non inviare il messaggio al mittente
                 send(user.client_sock, privmsg.c_str(), privmsg.size(), 0);
             }
         }
@@ -136,7 +137,7 @@ void privmsg_command(ft_irc& irc, int i, const std::string& target)
                 send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
                 continue;
             }
-            sendMessageToChannel(irc, target, ":" + msg, irc.client[i]);
+            sendMessageToChannel(irc, i, target, ":" + msg, irc.client[i]);
         }
         else
         { // Se il destinatario è un utente

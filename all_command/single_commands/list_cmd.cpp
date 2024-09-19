@@ -50,7 +50,7 @@ void	list_command(ft_irc& irc, int i)
         {
             std::stringstream ss;
             ss << it->_num_users;
-            message = " " + it->_name + " " + ss.str() + " : " + it->_topic;
+            message = " " + it->_name + " " + ss.str() + " :" + it->_topic;
             send_error_message(irc, i, "322", message, irc.client[i].client_sock);
         }
     }

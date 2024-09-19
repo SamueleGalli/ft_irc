@@ -19,7 +19,7 @@ int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int 
 	}
 	else
 	{
-		irc.msg = irc.client[i].nick + " " + channel._name + " :You are already on channel";
+		irc.msg = " " + channel._name + " :You are already on channel";
 		send_error_message(irc, i, "443", irc.msg, irc.client[i].client_sock);
 		return (0);
 	}
@@ -80,7 +80,7 @@ int join_on_existing_channel(ft_irc& irc, int i, const std::string& channel_name
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick, it->users);
 	if (user_it != it->users.end())
 	{
-		irc.msg =irc.client[i].nick + " " + it->_name + " :You are already on channel";
+		irc.msg =" " + it->_name + " :You are already on channel";
 		send_error_message(irc, i, "443", irc.msg, irc.client[i].client_sock);
 		return (0);
 	}	
@@ -121,15 +121,15 @@ void join_command(ft_irc& irc, int i, const std::string& channel_name, const std
     }
     if (user_channels >= MAX_CHANNELS_PER_USER)
     {
-        irc.msg =irc.client[i].nick + " " + channel_name + " :You have joined too many channels";
+        irc.msg =" " + channel_name + " :You have joined too many channels";
 		send_error_message(irc, i, "405", irc.msg, irc.client[i].client_sock);
         return;
     }
 	if (!check_channel_name(channel_name))
 	{
 		irc.msg = ":No such channel";
-        	send_error_message(irc, i, "403", irc.msg, irc.client[i].client_sock);
-        	return;
+		send_error_message(irc, i, "403", irc.msg, irc.client[i].client_sock);
+		return;
 	}
 	std::vector<Channel>::iterator it = findChannel(channel_name, irc.channels);
 	if (it == irc.channels.end())

@@ -58,7 +58,6 @@ void update_channel_list(ft_irc& irc, Channel& channel_name)
 	std::string end_users = channel_name._name + " :End of /NAMES list";
     for (unsigned int op = 0;op != channel_name.operatorUsers.size(); op++)
     {
-		std::cout << "op = " << channel_name.operatorUsers[op].nick << std::endl;
         if (findUserInChannel(channel_name.operatorUsers[op].nick, channel_name.operatorUsers) != channel_name.operatorUsers.end())
         {
             send_error_message(irc, op, "353", message, channel_name.operatorUsers[op].client_sock);
@@ -67,7 +66,6 @@ void update_channel_list(ft_irc& irc, Channel& channel_name)
     }
 	for (unsigned int t = 0; t < channel_name.users.size(); t++)
 	{
-		std::cout << "user = " << channel_name.users[t].nick << std::endl;
     	if ((findUserInChannel(channel_name.users[t].nick, channel_name.users) != channel_name.users.end())
         && channel_name.users[t].nick != channel_name.operatorUsers[0].nick)
 		{

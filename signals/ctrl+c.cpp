@@ -46,7 +46,6 @@ void remove_user_from_channels(ft_irc& irc, int i)
 {
     for (std::vector<Channel>::iterator it = irc.channels.begin(); it != irc.channels.end();)
     {
-        std::cout << "channel name = \""<< it->_name << "\"" << std::endl;
         it->DeleteUserFromChannel(irc, i);
         if (it->_num_users <= 0)
 		    it = irc.channels.erase(it);
@@ -78,7 +77,7 @@ void notify_quit(ft_irc& irc, int i, const std::string& message)
 
 void quitting_channels(ft_irc& irc, int i)
 {
-    std::string message = irc.client[i].nick + " has quit (Read error : Connection reset by peer)";
+    std::string message = irc.client[i].nick + " has quit (Read error :Connection reset by peer)";
     notify_quit(irc, i, message);
     remove_user_from_channels(irc, i);
 

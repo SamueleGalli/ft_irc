@@ -77,7 +77,7 @@ void    autentication(ft_irc &irc, int i)
         process_pass_command(irc, i);
     else if ((cmd == "PASS" && irc.client[i].is_pass == true) || (cmd == "USER" && irc.client[i].is_user == true))
     {
-        send_error_message(irc, i, "462", ": You are already registered", irc.client[i].client_sock);
+        send_error_message(irc, i, "462", ":You are already registered", irc.client[i].client_sock);
         return ;
     }
     else if (cmd == "NICK")
@@ -106,7 +106,7 @@ int registretion(ft_irc &irc, int i)
         std::cout << CYAN <<" Client[" << i << "]: " << RESET;
         colored_message(irc.buffer, CYAN);
         if (first_command(irc) == "NICK" || first_command(irc) == "USER" || first_command(irc) == "PASS")
-            send_error_message(irc, i, "462", ": You are already registered", irc.client[i].client_sock);
+            send_error_message(irc, i, "462", ":You are already registered", irc.client[i].client_sock);
         else
             commands(irc, i);
     }

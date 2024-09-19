@@ -19,7 +19,7 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick_name, ch_iter->users);
 	if (user_it == ch_iter->users.end() || ch_iter->isMember(irc.client[i]) == false || findUserInChannel(nick_name, ch_iter->users) == ch_iter->users.end()) 
 	{
-		send_error_message(irc, i, "441", ":They're not on that channel.", irc.client[i].client_sock);
+		send_error_message(irc, i, "441", ":You're not on that channel.", irc.client[i].client_sock);
 		return;
 	}
 	//User found
@@ -27,7 +27,7 @@ void kick_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	// Control if who sended cmd is a channel operator
 	if (!isOperator(oper_name, ch_iter->operatorUsers)) 
 	{
-		send_error_message(irc, i, "482", ":They're not channel operator.", irc.client[i].client_sock);
+		send_error_message(irc, i, "482", ":You're not channel operator.", irc.client[i].client_sock);
 		return;
 	}
 

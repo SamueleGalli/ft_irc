@@ -22,7 +22,7 @@ void part_command(ft_irc& irc, int i, const std::string& nick, const std::string
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick, ch_iter->users);
 	if (user_it == ch_iter->users.end()) 
 	{
-		send_error_message(irc, i, "441", ":They're not on that channel.", irc.client[i].client_sock);
+		send_error_message(irc, i, "441", ":You're not on that channel.", irc.client[i].client_sock);
 		return;
 	}
 	message =  channel_name;
