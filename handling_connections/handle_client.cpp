@@ -6,8 +6,16 @@ int process_incoming_data(ft_irc &irc, int i)
         return 0;
     ssize_t bytes = recv(irc.p_fds[i].fd, irc.buffer, sizeof(irc.buffer) - 1, 0);
     i--;
-    if (bytes == 0)
+    if (bytes >= 511)
+        return 1;
+    if (bytes < 0)
     {
+        perror("recv");
+        return 1;
+    }
+    else if (bytes == 0)
+    {
+        irc.buffer_d.clear();
         quitting_channels(irc, i);
         return 1;
     }
@@ -26,12 +34,10 @@ int process_incoming_data(ft_irc &irc, int i)
     }
     if (first_command(irc) == "CAP" && trim(second_command(irc)) == "LS 302")
         return 0;
-
     if (handle_command(irc, i) == 1)
         return 1;
     return 0;
 }
-
 
 int accept_connections(ft_irc &irc)
 {

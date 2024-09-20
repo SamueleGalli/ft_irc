@@ -3,11 +3,24 @@
 const int MAX_CHANNELS_PER_USER = 3;
 bool check_channel_name(const std::string& channel_name)
 {
-    if (channel_name.empty() || channel_name[0] != '#'\
-        || channel_name.size() < 4 || channel_name[1] == '.')
+    if (channel_name.empty() || channel_name.size() < 4)
         return false;
     else
+	{
+		if (channel_name[0] != '#' && channel_name[0] != '&' && channel_name[0] != '+')
+			return false;
+		for (unsigned int i = 1; i < channel_name.size(); i++)
+		{
+			if (channel_name[i] == ',' || channel_name[i] == ':')
+				return false;
+			else if (channel_name[i] == '\\')
+			{
+				if (channel_name[i + 1] == 'n' || channel_name[i + 1] == 'r' || channel_name[i + 1] == '0')
+					return false;
+			}
+		}
         return true;
+	}
 }
 
 int	join_to_channel(ft_irc& irc, Channel& channel, const std::string& nick, int i)

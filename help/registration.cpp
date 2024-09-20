@@ -78,13 +78,10 @@ int cont_check_nick(ft_irc &irc, int i, const std::string &nick)
         return (1);
     }
     int alpha = 0;
-    int num = 0;
     for (unsigned int j = 0; j < nick.length(); j++)
     {
         if (std::isalpha(nick[j]))
             alpha = 1;
-        else if (std::isdigit(nick[j]))
-            num = 1;
         if (!std::isalnum(nick[j]) && nick[j] != '-' && nick[j] != '.')
         {
             error_msg = ":Erroneous nickname";
@@ -92,7 +89,7 @@ int cont_check_nick(ft_irc &irc, int i, const std::string &nick)
             return (1);
         }
     }
-    if (alpha == 0 || num == 0 || nick[0] == '.' || nick[nick.length() - 1] == '.' || \
+    if (alpha == 0 || nick[0] == '.' || nick[nick.length() - 1] == '.' || \
     nick[0] == '-' || nick[nick.length() - 1] == '-')
     {
         error_msg = ":Erroneous nickname";

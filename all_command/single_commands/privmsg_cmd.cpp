@@ -32,8 +32,6 @@ void sendMessageToChannel(ft_irc& irc, int t, const std::string& channelName, co
         // Invia il messaggio a tutti gli utenti del canale
         for (size_t i = 0; i < channelIt->users.size(); i++)
         {
-            std::cout << "client = " << irc.client[i].nick << std::endl;
-            std::cout << "sender = " << sender.nick << std::endl;
             if (channelIt->users[i].nick != irc.client[t].nick)
             {
                 client_info user = channelIt->users[i];

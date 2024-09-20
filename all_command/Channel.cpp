@@ -77,7 +77,6 @@ void Channel::removeUser(const std::string& nick)
 {
     for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it)
     {
-        std::cout << it->nick << " == " << nick << std::endl;
         if (it->nick == nick)
         {
             users.erase(it);
