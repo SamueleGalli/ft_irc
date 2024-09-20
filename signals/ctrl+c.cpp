@@ -49,8 +49,8 @@ void remove_user_from_channels(ft_irc& irc, int i)
         it->DeleteUserFromChannel(irc, i);
         if (it->_num_users <= 0)
 		    it = irc.channels.erase(it);
-	    else if (it->operatorCount() <= 0)
-		    it->next_operator();
+		else if (it->operatorCount() <= 0)
+			it->next_operator();
         else
         {
             update_user_list(irc, i, it);
@@ -78,7 +78,7 @@ void notify_quit(ft_irc& irc, int i, const std::string& message)
 void quitting_channels(ft_irc& irc, int i)
 {
     std::string message = irc.client[i].nick + " has quit (Read error :Connection reset by peer)";
-    notify_quit(irc, i, message);
+	notify_quit(irc, i, message);
     remove_user_from_channels(irc, i);
 
     close(irc.client[i].client_sock);

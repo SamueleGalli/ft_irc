@@ -77,15 +77,13 @@ void Channel::removeUser(const std::string& nick)
 {
     for (std::vector<client_info>::iterator it = users.begin(); it != users.end(); ++it)
     {
+        std::cout << it->nick << " == " << nick << std::endl;
         if (it->nick == nick)
         {
-            if (it->nick == operatorUsers[0].nick)
-                operatorUsers.erase(operatorUsers.begin());
             users.erase(it);
             _num_users--;
+            return;
         }
-        if (users.empty())
-            break;
     }
 }
 
@@ -96,7 +94,6 @@ void Channel::removeOperator(const std::string& oper)
         if (it->nick == oper)
         {
             operatorUsers.erase(it);
-            _num_users--;
             break;
         }
     }

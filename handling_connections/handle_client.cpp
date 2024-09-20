@@ -12,12 +12,18 @@ int process_incoming_data(ft_irc &irc, int i)
         return 1;
     }
     irc.buffer[bytes] = '\0';
-    /*if (bytes > 0 && irc.buffer[bytes - 1] != '\n')
+    if (bytes > 0 && irc.buffer[bytes - 1] != '\n')
     {
-        irc.buffer_d.append(irc.buffer, bytes);
-        std::cout << "ctrl+d = " << irc.buffer_d << std::endl;
+        irc.buffer_d.append(irc.buffer, strlen(irc.buffer));
+        send(irc.client[i].client_sock, "^D", 2, 0);
         return 0;
-    }*/
+    }
+    else
+    {
+        irc.buffer_d.append(irc.buffer, strlen(irc.buffer));
+        strcpy(irc.buffer, irc.buffer_d.c_str());
+        irc.buffer_d.clear();
+    }
     if (first_command(irc) == "CAP" && trim(second_command(irc)) == "LS 302")
         return 0;
 
