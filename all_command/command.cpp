@@ -101,7 +101,13 @@ int registretion(ft_irc &irc, int i)
         autentication(irc, i);
     else
     {
-        if (first_command(irc) == "PING" || first_command(irc) == "WHO" || first_command(irc) == "USERHOST")
+        std::cout << "client = " << irc.buffer << std::endl;
+        if (first_command(irc) == "PING")
+        {
+            const std::string &messages = "PONG :" + second_command(irc);
+            send(irc.client[i].client_sock, messages.c_str(), messages.size(), 0);
+        }
+        if (first_command(irc) == "WHO" || first_command(irc) == "USERHOST")
             return (0);
         if (first_command(irc) == "NICK" || first_command(irc) == "USER" || first_command(irc) == "PASS")
             send_error_message(irc, i, "462", ":You are already registered", irc.client[i].client_sock);

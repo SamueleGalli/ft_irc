@@ -77,6 +77,7 @@ class ft_irc
         bool server_suspended;
         bool server_running;
 };
+
 int     handle_server(ft_irc &irc);
 int     handle_client(ft_irc &irc);
 int     handle_command(ft_irc &irc, int i);
