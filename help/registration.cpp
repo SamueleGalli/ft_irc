@@ -126,7 +126,6 @@ int check_nick(const std::string &nick, ft_irc &irc, int i)
 
 void    process_pass_command(ft_irc &irc, int i)
 {
-    //non inserisco la password
     std::string pass = trim((second_command(irc)));
     if (pass[0] == ':')
         pass = extract_message(pass);

@@ -1,13 +1,9 @@
 #include "../header/ft_irc.hpp"
-
-/*ctrl+d divide comando e poi lo esegue insieme
-ctrl+d ctrl+d spacca il programma*/
-// Dichiarazione della variabile globale dell'istanza di ft_irc
 extern ft_irc global_irc;
 
 void handle_sigtstp(int signal)
 {
-    (void)signal; // Suppress unused parameter warning
+    (void)signal;
 
     if (!global_irc.server_suspended) 
     {
@@ -29,7 +25,7 @@ void handle_sigtstp(int signal)
 
 void handle_termination(int signal)
 {
-    (void)signal; // Suppress unused parameter warning
+    (void)signal;
 
     std::cout << "Received signal " << signal << ", shutting down..." << std::endl;
     global_irc.server_running = false;

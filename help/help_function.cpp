@@ -11,11 +11,11 @@ std::string extract_message(const std::string &buffer)
 
 void init_poll(ft_irc &irc, int &sock)
 {
-    struct pollfd pfd; //creo struct pollfd
-    pfd.fd = sock; //associo il socket a fd cosi che pfd lo monitori
-    pfd.events = POLLIN; //permetto l'ascolto degli eventi
-    pfd.revents = 0; //definisce che pfd dovra monitorare i dati inviati
-    irc.p_fds.push_back(pfd); //inserisco pfd nel vettore
+    struct pollfd pfd;
+    pfd.fd = sock;
+    pfd.events = POLLIN;
+    pfd.revents = 0;
+    irc.p_fds.push_back(pfd);
 }
 
 void removeChars(std::string& str, const char charsToRemove)
@@ -45,17 +45,10 @@ bool    check_info(ft_irc irc, int i)
 
 std::string trim(const std::string& str)
 {
-    // Trova la prima posizione di un carattere non spazio
     size_t start = str.find_first_not_of(' ');
-    // Trova l'ultima posizione di un carattere non spazio
     size_t end = str.find_last_not_of(' ');
-
-    // Se la stringa è tutta spazi o vuota, ritorna una stringa vuota
-    if (start == std::string::npos) {
+    if (start == std::string::npos)
         return "";
-    }
-
-    // Ritorna la sottostringa tra 'start' e 'end'
     return str.substr(start, end - start + 1);
 }
 

@@ -23,53 +23,6 @@ void    commands(ft_irc &irc, int i)
 void    autentication(ft_irc &irc, int i)
 {
     std::string cmd = first_command(irc);
-    //da levare poi
-    if (cmd == "SKIP")
-    {
-        irc.client[i].authenticated = true;
-        irc.client[i].nick = "NICK";
-        irc.client[i].user = "USER";
-        irc.client[i].realname = "anonymous";
-        irc.client[i].server = "server";
-        irc.client[i].host = "localhost";
-        welcome_msg(irc, i);
-        return ;
-    }
-    else if (cmd == "SKIP1")
-    {
-        irc.client[i].authenticated = true;
-        irc.client[i].nick = "NICK1";
-        irc.client[i].user = "USER1";
-        irc.client[i].realname = "anonymous1";
-        irc.client[i].server = "server1";
-        irc.client[i].host = "localhost1";
-        welcome_msg(irc, i);
-        return ;
-
-    }
-    if (cmd == "SKIP2")
-    {
-        irc.client[i].authenticated = true;
-        irc.client[i].nick = "NICK2";
-        irc.client[i].user = "USER2";
-        irc.client[i].realname = "anonymous2";
-        irc.client[i].server = "server2";
-        irc.client[i].host = "localhost2";
-        welcome_msg(irc, i);
-        return ;
-    }
-    else if (cmd == "SKIP3")
-    {
-        irc.client[i].authenticated = true;
-        irc.client[i].nick = "NICK3";
-        irc.client[i].user = "USER3";
-        irc.client[i].realname = "anonymous3";
-        irc.client[i].server = "server3";
-        irc.client[i].host = "localhost3";
-        welcome_msg(irc, i);
-        return ;
-
-    }
     std::string message = cmd + " :You have not registered";
     if (cmd == "\0")
         return ;
