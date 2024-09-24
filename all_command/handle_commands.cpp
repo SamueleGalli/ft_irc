@@ -72,7 +72,7 @@ void	operator_command(ft_irc& irc, int i)
 {
 	if (!check_number_of_arguments(irc.buffer))
 	{
-		send_error_message(irc, i, "461", ":Not enough parameters", irc.client[i].client_sock);
+		send_error_message(irc, i, "461", first_command(irc) + ":Not enough parameters", irc.client[i].client_sock);
 		return;
 	}	
 	send_to_command_function(irc, i);
@@ -82,7 +82,7 @@ void	channel_command(ft_irc& irc, int i)
 {
 	if (!check_number_of_arguments(irc.buffer))
 	{
-		send_error_message(irc, i, "461", ":Not enough parameters", irc.client[i].client_sock);
+		send_error_message(irc, i, "461", first_command(irc) + ":Not enough parameters", irc.client[i].client_sock);
 		return;
 	}
 	send_to_command_function(irc, i);

@@ -7,13 +7,13 @@ void part_command(ft_irc& irc, int i, const std::string& nick, const std::string
 	std::vector<Channel>::iterator ch_iter = findChannel(channel_name, irc.channels);
 	if (ch_iter == irc.channels.end()) 
 	{
-		send_error_message(irc, i, "403", ":No such channel", irc.client[i].client_sock);
+		send_error_message(irc, i, "403", ch_iter->_name + ":No such channel", irc.client[i].client_sock);
 		return;
 	}
 	std::vector<client_info>::iterator user_it = findUserInChannel(nick, ch_iter->users);
 	if (user_it == ch_iter->users.end()) 
 	{
-		send_error_message(irc, i, "441", ":You're not on that channel", irc.client[i].client_sock);
+		send_error_message(irc, i, "441", ch_iter->_name + " :You’re not on that channel", irc.client[i].client_sock);
 		return;
 	}
 	message =  channel_name;

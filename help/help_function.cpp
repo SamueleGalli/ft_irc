@@ -9,6 +9,37 @@ std::string extract_message(const std::string &buffer)
     return "";
 }
 
+bool    nickmember(const std::string nick, Channel &channel)
+{
+    if (channel.users.empty() != 0)
+    {
+        for (size_t i = 0; i < channel.users.size(); i++)
+        {
+            if (channel.users[i].nick == nick)
+                return true;
+        }
+    }
+    if (channel.operatorUsers.empty() != 0)
+    {
+        for (size_t i = 0; i < channel.operatorUsers.size(); i++)
+        {
+            if (channel.operatorUsers[i].nick == nick)
+                return true;
+        }
+    }
+    return false;
+}
+
+bool clienthadnick(const std::string nick, ft_irc &irc)
+{
+    for (size_t i = 0; i < irc.client.size(); i++)
+    {
+        if (irc.client[i].nick == nick)
+            return (true);
+    }
+    return (false);
+}
+
 void init_poll(ft_irc &irc, int &sock)
 {
     struct pollfd pfd;
@@ -16,6 +47,15 @@ void init_poll(ft_irc &irc, int &sock)
     pfd.events = POLLIN;
     pfd.revents = 0;
     irc.p_fds.push_back(pfd);
+}
+
+int find_char(const std::string &str, char char_to_find)
+{
+    size_t position = str.find(char_to_find);
+    if (position != std::string::npos)
+        return 1;
+    else
+        return 0;
 }
 
 void removeChars(std::string& str, const char charsToRemove)

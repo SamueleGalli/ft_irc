@@ -47,7 +47,7 @@ int invalid_command(ft_irc& irc, int i, const std::string& recipients)
         {
             if (individual_targets[dot - 1] != ' ')
             {
-                send_error_message(irc, i, "421", ":Unknown command", irc.client[i].client_sock);
+                send_error_message(irc, i, "421", first_command(irc) + " :Unknown command", irc.client[i].client_sock);
                 return (1);
             }
         }
@@ -106,7 +106,7 @@ void privmsg_command(ft_irc& irc, int i, const std::string& target)
     }
     if (individual_targets.size() > MAX_RECIPIENTS)
     {
-        std::string errMsg = "407 " + irc.client[i].nick + " :Too many recipients\r\n";
+        std::string errMsg = "407 " + irc.client[i].nick + " :Duplicate recipients. No message delivered\r\n";
         send(irc.client[i].client_sock, errMsg.c_str(), errMsg.size(), 0);
         return;
     }
