@@ -1,47 +1,5 @@
 #include "../header/ft_irc.hpp"
 
-void update_user_list(ft_irc& irc, int i, std::vector<Channel>::iterator it)
-{
-	std::string message;
-	std::string users_list;
-	
-	message =" = " + it->_name + " :";
-	for (std::vector<client_info>::iterator op_it = it->operatorUsers.begin(); op_it != it->operatorUsers.end(); ++op_it)
-		users_list += "@" + op_it->nick + " ";
-	std::vector<client_info>::iterator op_it = it->operatorUsers.begin();
-	bool is_operator = false;
-	for (std::vector<client_info>::iterator user_it = it->users.begin(); user_it != it->users.end(); ++user_it)
-	{
-		for (;op_it != it->operatorUsers.end(); ++op_it)
-		{
-			if (user_it->nick == op_it->nick)
-			{
-				is_operator = true;
-				break;
-			}
-		}
-		if (is_operator == true)
-		{
-			is_operator = false;
-			continue;
-		}
-		users_list += user_it->nick + " ";
-	}
-	message += users_list;
-	unsigned long int t;
-	for (t = 0; t < it->users.size(); t++)
-	{
-		if (it->isMember(irc.client[t]) == true || it->isMemberOperator(irc.client[t]) == true)
-			send_error_message(irc, i, "353", message, irc.client[t].client_sock);
-	}
-    message = it->_name + " :End of /NAMES list";
-	for (t = 0; t < it->users.size(); t++)
-	{
-		if (it->isMember(irc.client[t]) == true || it->isMemberOperator(irc.client[t]) == true)
-			send_error_message(irc, i, "366", message, irc.client[t].client_sock);
-	}
-}
-
 void remove_user_from_channels(ft_irc& irc, int i)
 {
     for (std::vector<Channel>::iterator it = irc.channels.begin(); it != irc.channels.end();)
@@ -53,7 +11,7 @@ void remove_user_from_channels(ft_irc& irc, int i)
 			it->next_operator();
         else
         {
-            update_user_list(irc, i, it);
+			update_channel_list(irc, *it);
             ++it;
         }
     }

@@ -26,7 +26,7 @@ std::string user_list(Channel& channel_name)
 	std::string message;
 	std::string users_list;
 	
-	message =" = " + channel_name._name + " :";
+	message ="= " + channel_name._name + " :";
 	for (std::vector<client_info>::iterator op_it = channel_name.operatorUsers.begin(); op_it != channel_name.operatorUsers.end(); ++op_it)
 		users_list += "@" + op_it->nick + " ";
 	std::vector<client_info>::iterator op_it = channel_name.operatorUsers.begin();
