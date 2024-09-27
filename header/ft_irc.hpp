@@ -69,9 +69,9 @@ class ft_irc
         std::string pass_server;
         std::string msg;
         std::string buffer_d;
-        std::vector<struct pollfd> p_fds;
         server_info server;
         char buffer[512];
+        std::vector<struct pollfd> p_fds;
         std::vector<client_info> client;
         std::vector<Channel> channels;
         bool server_suspended;
