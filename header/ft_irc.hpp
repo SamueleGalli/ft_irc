@@ -37,6 +37,7 @@ class client_info
         std::string host;
         std::string server;
         std::string realname;
+        std::string buffer_d;
         bool    authenticated;
         bool    is_nick;
         bool    is_user;
@@ -68,7 +69,6 @@ class ft_irc
         std::string port;
         std::string pass_server;
         std::string msg;
-        std::string buffer_d;
         server_info server;
         char buffer[512];
         std::vector<struct pollfd> p_fds;
@@ -105,6 +105,8 @@ void    client_message_all_users(ft_irc &irc, int i, int t, const std::string &c
 void    removeChars(std::string& str, const char charsToRemove);
 void    part_command(ft_irc& irc, int i, const std::string& user_name, const std::string& channel_name);
 void    handle_termination(int signal);
+void    client_message_user(ft_irc &irc, int i, const std::string &command, const std::string &ex_message, client_info &user);
+void    client_message_operator(ft_irc &irc, int i, const std::string &command, const std::string &ex_message, client_info &oper);
 void    handle_sigtstp(int signal);
 void	list_command(ft_irc& irc, int i);
 void	operator_command(ft_irc& irc, int i);
