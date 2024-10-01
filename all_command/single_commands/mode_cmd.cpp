@@ -251,6 +251,12 @@ void mode_command(ft_irc& irc, int i, const std::string& oper_name, const std::s
 	}
 	else if (option[1] == 'o')
 	{
+		if (option_param == oper_name)
+		{
+			message =  ch_iter->_name + " :You’re not channel operator";
+			send_error_message(irc, i, "482", message, irc.client[i].client_sock);
+			return;
+		}
 		if (option_param.empty())
 		{
 			send_error_message(irc, i, "461", first_command(irc) + " :Not enough parameters", irc.client[i].client_sock);
