@@ -34,7 +34,6 @@ int process_incoming_data(ft_irc &irc, int i)
     }
     if (irc.buffer[0] == '\n')
         return (0);
-    std::cout << irc.buffer << std::endl;
     if (first_command(irc) == "CAP" && trim(second_command(irc)) == "LS 302")
         return 0;
     if (handle_command(irc, i) == 1)

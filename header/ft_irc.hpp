@@ -129,6 +129,7 @@ void    privmsg_command(ft_irc& irc, int i, const std::string& target);
 void    client_message_in_channel(ft_irc &irc, Channel& channel, int i, int t, const std::string &command, const std::string &ex_message);
 void    quitting_channels(ft_irc& irc, int i);
 void    update_channel_list(ft_irc& irc, Channel& channel_name);
+void	reply_to_channel(ft_irc& irc, int i, Channel &channel_name);
 
 bool    nickmember(const std::string nick, Channel &channel);
 bool	isOperator(const std::string& oper_name, std::vector<client_info>& operatorUsers);
